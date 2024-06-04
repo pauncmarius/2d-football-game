@@ -2,6 +2,8 @@
 #define GAME_H
 
 #include <QWidget>
+#include <QLabel>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Game; }
@@ -17,6 +19,8 @@ public:
 
 private:
     Ui::Game *ui;
+    QLabel *backgroundLabel;
+
 
 };
 #endif // GAME_H
