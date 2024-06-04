@@ -266,6 +266,7 @@ Makefile: ..\DegreeProject\DegreeProject.pro C:\Qt\Qt5.14.2\5.14.2\msvc2017\mksp
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\qt_config.prf \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\win32-msvc\qmake.conf \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\spec_post.prf \
+		.qmake.stash \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\exclusive_builds.prf \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\common\msvc-version.conf \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\toolchain.prf \
@@ -295,7 +296,6 @@ Makefile: ..\DegreeProject\DegreeProject.pro C:\Qt\Qt5.14.2\5.14.2\msvc2017\mksp
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Gui.prl \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Core.prl \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\qtmain.prl \
-		.qmake.stash \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\build_pass.prf \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Widgetsd.prl \
 		C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Guid.prl \
@@ -484,6 +484,7 @@ C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\qt_functions.prf:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\qt_config.prf:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\win32-msvc\qmake.conf:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\spec_post.prf:
+.qmake.stash:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\exclusive_builds.prf:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\common\msvc-version.conf:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\toolchain.prf:
@@ -513,7 +514,6 @@ C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Widgets.prl:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Gui.prl:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Core.prl:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\qtmain.prl:
-.qmake.stash:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\mkspecs\features\build_pass.prf:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Widgetsd.prl:
 C:\Qt\Qt5.14.2\5.14.2\msvc2017\lib\Qt5Guid.prl:
