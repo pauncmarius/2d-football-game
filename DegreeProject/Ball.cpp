@@ -1,4 +1,4 @@
-#include "ball.h"
+#include "Ball.h"
 
 Ball::Ball(qreal x, qreal y, qreal width, qreal height)
     : QObject(), QGraphicsPixmapItem(), ballWidth(width), ballHeight(height), currentFrame(0), frameInterval(100), frameTimer(0)
@@ -36,7 +36,7 @@ void Ball::advance(int step)
     qreal newY = y() + velocityY;
 
     // Get the boundaries of the scene
-    qreal sceneBottom = scene()->sceneRect().bottom();
+    qreal sceneBottom = scene()->sceneRect().bottom()-230;
 
     // Check for collision with the bottom of the scene
     if (newY + pixmap().height() > sceneBottom) {
