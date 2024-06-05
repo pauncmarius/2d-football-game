@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     // Start the game loop
     QTimer *timer = new QTimer();
     QObject::connect(timer, &QTimer::timeout, scene, &QGraphicsScene::advance);
-    timer->start(200);
+    timer->start(50);
 
     // Show the view
     view->show();

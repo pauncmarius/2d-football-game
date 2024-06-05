@@ -18,13 +18,16 @@ protected:
     void advance(int step) override;
 
 private:
-    qreal dx;
-    qreal dy;
+
     qreal ballWidth;
     qreal ballHeight;
-    qreal speedMultiplier;
+
     int currentFrame;
     std::vector<QPixmap> frames;
+
+    qreal velocityY;          // Vertical velocity
+    const qreal gravity;      // Acceleration due to gravity
+    const qreal bounceFactor; // Energy loss factor on bounce
 };
 
 #endif // BALL_H
