@@ -24,6 +24,8 @@ private:
 
     int currentFrame;
     std::vector<QPixmap> frames;
+    int frameInterval; // Interval in milliseconds between frames
+    int frameTimer;    // Timer to track frame change
 
     qreal velocityY;          // Vertical velocity
     const qreal gravity;      // Acceleration due to gravity

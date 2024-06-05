@@ -1,3 +1,4 @@
+//main.cpp
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
     // Start the game loop
     QTimer *timer = new QTimer();
     QObject::connect(timer, &QTimer::timeout, scene, &QGraphicsScene::advance);
-    timer->start(50);
+    timer->start(30);
 
     // Show the view
     view->show();

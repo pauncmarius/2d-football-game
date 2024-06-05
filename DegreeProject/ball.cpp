@@ -1,20 +1,14 @@
 #include "ball.h"
 
 Ball::Ball(qreal x, qreal y, qreal width, qreal height)
-    : QObject(), QGraphicsPixmapItem(), ballWidth(width), ballHeight(height), currentFrame(0)
+    : QObject(), QGraphicsPixmapItem(), ballWidth(width), ballHeight(height), currentFrame(0), frameInterval(100), frameTimer(0)
     ,velocityY(0), gravity(0.5), bounceFactor(0.7)
 {
-    // Load the four frames of the ball animation
-    QPixmap originalPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/balls.png");
-    // Calculate the width of a single frame
-    int frameWidth = originalPixmap.width() / 2;
-    int frameHeight = originalPixmap.height() / 2;
-
-    // Extract each frame from the original pixmap
-    frames.push_back(originalPixmap.copy(0, 0, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
-    frames.push_back(originalPixmap.copy(frameWidth, 0, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
-    frames.push_back(originalPixmap.copy(0, frameHeight, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
-    frames.push_back(originalPixmap.copy(frameWidth, frameHeight, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    // Load the four individual frames of the ball animation
+    frames.push_back(QPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png").scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    frames.push_back(QPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball2.png").scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    frames.push_back(QPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball3.png").scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    frames.push_back(QPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball4.png").scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
 
     setPixmap(frames[currentFrame]);
     setPos(x, y);
@@ -24,9 +18,16 @@ void Ball::advance(int step)
 {
     if (!step) return;
 
-    // Update the current frame for the animation
-    currentFrame = (currentFrame + 1) % frames.size();
-    setPixmap(frames[currentFrame]);
+    // Check if the ball has stopped
+    if (velocityY != 0) {
+        // Update the frame based on the frame interval
+        frameTimer += 16;
+        if (frameTimer >= frameInterval) {
+            frameTimer = 0;
+            currentFrame = (currentFrame + 1) % frames.size();
+            setPixmap(frames[currentFrame]);
+        }
+    }
 
     // Apply gravity
     velocityY += gravity;
