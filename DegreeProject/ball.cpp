@@ -21,7 +21,7 @@ void Ball::advance(int step)
     // Check if the ball has stopped
     if (velocityY != 0) {
         // Update the frame based on the frame interval
-        frameTimer += 16;
+        frameTimer += 30;
         if (frameTimer >= frameInterval) {
             frameTimer = 0;
             currentFrame = (currentFrame + 1) % frames.size();

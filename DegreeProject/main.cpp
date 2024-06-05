@@ -15,8 +15,18 @@ int main(int argc, char *argv[])
     // Set the scene's boundaries
     scene->setSceneRect(0, 0, 1280, 720);
 
+    // Load and scale the background image
+    QPixmap bgPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bgGame.png");
+    QPixmap scaledBgPixmap = bgPixmap.scaled(scene->sceneRect().size().toSize(), Qt::KeepAspectRatioByExpanding);
+
+    // Add background image
+    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(scaledBgPixmap);
+    background->setPos(0, 0);
+    scene->addItem(background);
+
+
     // Create a new Ball item
-    Ball *ball = new Ball(0, 0, 100, 100);
+    Ball *ball = new Ball(0, 0, 50, 50);
     ball->setPos(scene->width() / 2 - ball->pixmap().width() / 2, scene->height() / 2 - ball->pixmap().height() / 2);
 
     // Add the Ball item to the scene
