@@ -23,7 +23,7 @@ public:
     {
         if (Game->objectName().isEmpty())
             Game->setObjectName(QString::fromUtf8("Game"));
-        Game->resize(800, 600);
+        Game->resize(719, 600);
 
         retranslateUi(Game);
 

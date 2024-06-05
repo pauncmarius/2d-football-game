@@ -1,25 +1,30 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include <QGraphicsEllipseItem>
-#include <QTimer>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QObject>
+#include <QPixmap>
+#include <vector>
 
-class Ball : public QObject, public QGraphicsEllipseItem
+class Ball : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 
 public:
     Ball(qreal x, qreal y, qreal width, qreal height);
 
-public slots:
-    void moveBall();
+protected:
+    void advance(int step) override;
 
 private:
     qreal dx;
     qreal dy;
-    QTimer *timer;
+    qreal ballWidth;
+    qreal ballHeight;
+    qreal speedMultiplier;
+    int currentFrame;
+    std::vector<QPixmap> frames;
 };
 
 #endif // BALL_H

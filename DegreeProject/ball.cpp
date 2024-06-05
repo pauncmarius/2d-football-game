@@ -1,34 +1,29 @@
 #include "ball.h"
 
 Ball::Ball(qreal x, qreal y, qreal width, qreal height)
-    : QObject(), QGraphicsEllipseItem(), dx(2), dy(2)
+    : QObject(), QGraphicsPixmapItem(), ballWidth(width), ballHeight(height), currentFrame(0)
 {
-    setRect(x, y, width, height);
+    // Load the four frames of the ball animation
+    QPixmap originalPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/balls.png");
+    // Calculate the width of a single frame
+    int frameWidth = originalPixmap.width() / 2;
+    int frameHeight = originalPixmap.height() / 2;
 
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Ball::moveBall);
-    timer->start(16); // Move the ball every 30 milliseconds
+    // Extract each frame from the original pixmap
+    frames.push_back(originalPixmap.copy(0, 0, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    frames.push_back(originalPixmap.copy(frameWidth, 0, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    frames.push_back(originalPixmap.copy(0, frameHeight, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+    frames.push_back(originalPixmap.copy(frameWidth, frameHeight, frameWidth, frameHeight).scaled(ballWidth, ballHeight, Qt::KeepAspectRatio));
+
+        setPixmap(frames[currentFrame]);
+    setPos(x, y);
 }
 
-void Ball::moveBall()
+void Ball::advance(int step)
 {
-    qreal newX = x() + dx;
-    qreal newY = y() + dy;
+    if (!step) return;
 
-    // Get the boundaries of the scene
-    qreal sceneLeft = scene()->sceneRect().left();
-    qreal sceneRight = scene()->sceneRect().right();
-    qreal sceneTop = scene()->sceneRect().top();
-    qreal sceneBottom = scene()->sceneRect().bottom();
-
-    // Check for collision with the scene boundaries
-    if (newX < sceneLeft || newX + rect().width() > sceneRight) {
-        dx = -dx; // Reverse horizontal direction
-    }
-    if (newY < sceneTop || newY + rect().height() > sceneBottom) {
-        dy = -dy; // Reverse vertical direction
-    }
-
-    // Move the ball
-    setPos(x() + dx, y() + dy);
+    // Update the current frame for the animation
+    currentFrame = (currentFrame + 1) % frames.size();
+    setPixmap(frames[currentFrame]);
 }
