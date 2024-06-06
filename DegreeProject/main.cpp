@@ -1,4 +1,6 @@
 #include <QApplication>
+#include <QSurfaceFormat>
+
 #include "glwindow.h"
 
 int main(int argc, char *argv[])
@@ -6,7 +8,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     GLWindow w;
-    w.resize(800, 600);
+    w.resize(1280, 720);
     w.show();
 
     return a.exec();

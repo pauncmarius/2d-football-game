@@ -21,10 +21,14 @@ TEMPLATE = app
 
 SOURCES += \
     glwindow.cpp \
-    main.cpp
+    main.cpp \
+    shader.cpp \
+    texture.cpp
 
 HEADERS += \
-    glwindow.h
+    glwindow.h \
+    shader.h \
+    texture.h
 
 FORMS += \
     ball.ui
