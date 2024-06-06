@@ -17,12 +17,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Ball.cpp \
-    Goal.cpp \
+    Shadow.cpp \
     main.cpp
 
 HEADERS += \
     Ball.h \
-    Goal.h
+    Shadow.h
 
 FORMS += \
     ball.ui

@@ -4,7 +4,7 @@
 #include <QGraphicsView>
 #include "Ball.h"
 #include <QTimer>
-#include "Goal.h"
+#include "Shadow.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,24 +12,20 @@ int main(int argc, char *argv[])
 
     // Create a new scene
     QGraphicsScene *scene = new QGraphicsScene();
-
     // Set the scene's boundaries
     scene->setSceneRect(0, 0, 1280, 720);
 
     // Load and scale the background image
     QPixmap bgPixmap("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
     QPixmap scaledBgPixmap = bgPixmap.scaled(scene->sceneRect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
     // Add background image
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem(scaledBgPixmap);
     background->setPos(0, 0);
     scene->addItem(background);
 
-
     // Create a new Ball item
     Ball *ball = new Ball(0, 0, 50, 50);
     ball->setPos(scene->width() / 2 - ball->pixmap().width() / 2, 0);
-
     // Add the Ball item to the scene
     scene->addItem(ball);
 

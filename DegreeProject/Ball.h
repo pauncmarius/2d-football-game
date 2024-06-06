@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QPixmap>
 #include <vector>
+#include "Shadow.h"
 
 class Ball : public QObject, public QGraphicsPixmapItem
 {
@@ -30,6 +31,9 @@ private:
     qreal velocityY;          // Vertical velocity
     const qreal gravity;      // Acceleration due to gravity
     const qreal bounceFactor; // Energy loss factor on bounce
+
+    Shadow *shadow; // Add shadow as a member
+
 };
 
 #endif // BALL_H
