@@ -16,23 +16,22 @@ GLWindow::~GLWindow()
 void GLWindow::initializeGL()
 {
     initializeOpenGLFunctions();  // Initialize OpenGL functions
-    texture->initializeOpenGLFunctions();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set the background color to black
+    texture->initializeOpenGLFunctions();
 
     // Load the texture
     texture->load("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
     // Setup shaders
+    shaderProgram->initialize();
     setupShaders();
 
-    // Set up vertex data and buffers and configure vertex attributes
     GLfloat vertices[] = {
         // Positions          // Texture Coords
-        -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, // Bottom-left
-         1.0f, -1.0f, 0.0f,   1.0f, 0.0f, // Bottom-right
-         1.0f,  1.0f, 0.0f,   1.0f, 1.0f, // Top-right
-        -1.0f,  1.0f, 0.0f,   0.0f, 1.0f  // Top-left
+        -1.0f, -1.0f, 0.0f,   0.0f, 1.0f, // Bottom-left
+         1.0f, -1.0f, 0.0f,   1.0f, 1.0f, // Bottom-right
+         1.0f,  1.0f, 0.0f,   1.0f, 0.0f, // Top-right
+        -1.0f,  1.0f, 0.0f,   0.0f, 0.0f  // Top-left
     };
 
     GLuint indices[] = {
@@ -116,7 +115,7 @@ void GLWindow::setupShaders()
         }
     )";
 
-    shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    shaderProgram->addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
+    shaderProgram->addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shaderProgram->link();
 }

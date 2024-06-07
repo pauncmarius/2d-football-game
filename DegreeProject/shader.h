@@ -1,21 +1,27 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions_3_3_Core>
 
-class Shader
+class Shader : public QOpenGLFunctions_3_3_Core
 {
 public:
     Shader();
     ~Shader();
 
-    void addShaderFromSourceCode(QOpenGLShader::ShaderType type, const char *source);
+    void addShaderFromSourceCode(GLenum shaderType, const char *source);
+    void initialize();
     void link();
     void bind();
     void release();
 
 private:
-    QOpenGLShaderProgram *program;
+    GLuint program;
+    GLuint vertexShader;
+    GLuint fragmentShader;
+
+    void checkCompileErrors(GLuint shader, const QString &type);
+    void checkLinkErrors(GLuint program);
 };
 
 #endif // SHADER_H
