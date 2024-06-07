@@ -1,9 +1,10 @@
 #include "texture.h"
 #include <QImage>
+#include <QOpenGLContext>
+#include <QDebug>
 
 Texture::Texture() : textureId(0)
 {
-    initializeOpenGLFunctions();
 }
 
 Texture::~Texture()
@@ -29,10 +30,23 @@ void Texture::load(const QString &path)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Check for errors
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            qDebug() << "OpenGL error in Texture::load: " << err;
+        }
+    } else {
+        qDebug() << "Failed to load image: " << path;
     }
 }
 
 void Texture::bind()
 {
     glBindTexture(GL_TEXTURE_2D, textureId);
+}
+
+void Texture::release()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

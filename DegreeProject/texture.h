@@ -1,10 +1,10 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_3_Core>
 #include <QString>
 
-class Texture : protected QOpenGLFunctions
+class Texture : public QOpenGLFunctions_3_3_Core
 {
 public:
     Texture();
@@ -12,6 +12,7 @@ public:
 
     void load(const QString &path);
     void bind();
+    void release();
 
 private:
     GLuint textureId;

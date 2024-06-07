@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "shader.h"
 
-class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions
+class GLWindow : public QOpenGLWidget, public QOpenGLFunctions_3_3_Core
 {
     Q_OBJECT
 
@@ -22,7 +22,7 @@ protected:
 private:
     Texture *texture;
     Shader *shaderProgram;
-    GLuint VBO, VAO;
+    GLuint VBO, VAO, EBO;
 
     void setupShaders();
 };
