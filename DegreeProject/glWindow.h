@@ -14,12 +14,13 @@ public:
     explicit GLWindow(QWidget *parent = nullptr);
     ~GLWindow();
 
-    void GLWindow::updateAnimation();
-
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
+
+private slots:
+    void updateAnimation();
 
 private:
     BackgroundRenderer backgroundRenderer;

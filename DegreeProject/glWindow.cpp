@@ -1,18 +1,16 @@
 #include "glWindow.h"
 #include <QOpenGLShaderProgram>
-#include <QMatrix4x4>
 #include <QTimer>
-
 
 GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent)
 {
     // Set window flags to prevent resizing
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
 
-    // Create a timer to update the animation
+    // Create a timer to update the animation and physics
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &GLWindow::updateAnimation);
-    timer->start(16); // Adjust the interval to control the animation speed
+    timer->start(16); // Approximately 60 FPS
 }
 
 GLWindow::~GLWindow(){}
@@ -60,12 +58,14 @@ void GLWindow::paintGL()
 
     // Render the background
     backgroundRenderer.render();
-    // Render the ball
-    ball.render();
+    ball.render();  // Render the ball
 }
 
 void GLWindow::updateAnimation()
 {
-    ball.updateAnimationFrame();
-    update(); // Request a repaint to update the animation
+    ball.updatePhysics();
+    if (ball.isJumping()) {
+        ball.updateAnimationFrame();
+    }
+    update(); // Request a repaint to update the animation and physics
 }

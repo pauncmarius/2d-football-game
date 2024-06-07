@@ -1,9 +1,13 @@
 #include "ball.h"
 #include <cmath>
 
-Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0) {
+Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), jumping(true), dampingFactor(0.7f) {
     position[0] = 0.0f;
     position[1] = 0.9f;
+    velocity[0] = 0.0f;
+    velocity[1] = 0.0f;
+    acceleration[0] = 0.0f;
+    acceleration[1] = -12.0f; // Gravity
 }
 
 Ball::~Ball() {
@@ -21,13 +25,13 @@ void Ball::initialize(const std::vector<QString> &texturePaths) {
     setupBuffers();
 
     numFrames = texturePaths.size();
-        for (const auto& texturePath : texturePaths) {
-            QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).mirrored());
-            texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-            texture->setMagnificationFilter(QOpenGLTexture::Linear);
-            texture->setWrapMode(QOpenGLTexture::Repeat);
-            textures.push_back(texture);
-        }
+    for (const auto& texturePath : texturePaths) {
+        QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).mirrored());
+        texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+        texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        texture->setWrapMode(QOpenGLTexture::Repeat);
+        textures.push_back(texture);
+    }
 }
 
 void Ball::setupShaders() {
@@ -115,11 +119,34 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
     projectionMatrix = projection;
 }
 
+void Ball::updatePhysics() {
+    if (jumping) {
+        velocity[1] += acceleration[1] * 0.016f; // Update velocity with acceleration
+        position[1] += velocity[1] * 0.016f; // Update position with velocity
+
+        if (position[1] <= -0.3f) { // The ground level
+            position[1] = -0.3f;
+            velocity[1] = -velocity[1] * dampingFactor; // Reverse and reduce velocity
+
+            if (fabs(velocity[1]) < 0.01f) { // If the velocity is very small, stop the ball
+                velocity[1] = 0.0f;
+                jumping = false;
+            }
+        }
+    }
+}
+
+bool Ball::isJumping() const {
+    return jumping;
+}
+
 void Ball::updateAnimationFrame() {
-    frameCounter++;
-    if (frameCounter >= 10) { // Adjust the number of frames to control the speed
-        frameCounter = 0;
-        currentFrame = (currentFrame + 1) % numFrames;
+    if (jumping) {
+        frameCounter++;
+        if (frameCounter >= 10) { // Adjust the number of frames to control the speed
+            frameCounter = 0;
+            currentFrame = (currentFrame + 1) % numFrames;
+        }
     }
 }
 
