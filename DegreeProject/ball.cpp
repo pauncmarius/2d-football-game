@@ -2,7 +2,7 @@
 #include "ball.h"
 #include <cmath>
 
-Ball::Ball() : VAO(0), VBO(0), EBO(0), texture(nullptr), radius(0.1f) {
+Ball::Ball() : VAO(0), VBO(0), EBO(0), texture(nullptr), radius(0.05f) {
     position[0] = 0.0f;
     position[1] = 0.0f;
 }
@@ -53,8 +53,6 @@ void Ball::setupShaders() {
 
         void main() {
             vec4 texColor = texture(ballTexture, TexCoord);
-            if (texColor.a < 0.1)
-                discard;
             color = texColor;
         }
     )";
@@ -65,8 +63,8 @@ void Ball::setupShaders() {
 }
 
 void Ball::setupBuffers() {
-    const int numSegments = 100;
-    const float angleIncrement = 2.0f * 3.14159265359f / numSegments;
+    const int numSegments = 200;
+    const float angleIncrement = (2.0f * 3.14159265359f) / numSegments;
     GLfloat vertices[(numSegments + 2) * 4];
     GLuint indices[numSegments * 3];
 
@@ -115,7 +113,8 @@ void Ball::render() {
     shader.setUniformValue("ballRadius", radius);
     texture->bind();
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 300, GL_UNSIGNED_INT, 0); // numSegments * 3
+
+    glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, 0); // numSegments * 3
     glBindVertexArray(0);
     texture->release();
     shader.release();
