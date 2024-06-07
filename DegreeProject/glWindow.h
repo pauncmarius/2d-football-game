@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include "backgroundRenderer.h"
 #include "ball.h"
+#include "player.h"
 
 class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
@@ -25,6 +26,7 @@ private slots:
 private:
     BackgroundRenderer backgroundRenderer;
     Ball ball;
+    Player player;
 };
 
 #endif // GLWINDOW_H

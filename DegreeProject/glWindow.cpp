@@ -23,13 +23,39 @@ void GLWindow::initializeGL()
     backgroundRenderer.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
     // Initialize the ball with texture paths for the animation frames
-    std::vector<QString> texturePaths = {
+    std::vector<QString> ballTexturePaths = {
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png",
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball2.png",
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball3.png",
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball4.png"
     };
-    ball.initialize(texturePaths);
+    ball.initialize(ballTexturePaths);
+
+    // Initialize the player with texture paths for the idle animation frames
+    std::vector<QString> playerTexturePaths = {
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_000.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_001.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_002.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_003.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_004.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_005.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_006.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_007.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_008.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_009.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_010.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_011.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_012.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_013.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_014.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_015.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_016.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_017.png"
+    };
+
+    player.initialize(playerTexturePaths);
+    // Set the scale for the player
+    player.setScale(0.45f, 0.25f);
 
     // Set the initial projection matrix
     QMatrix4x4 projection;
@@ -50,6 +76,7 @@ void GLWindow::resizeGL(int w, int h)
         projection.ortho(-1.0f, 1.0f, -1.0f / aspect, 1.0f / aspect, -1.0f, 1.0f);
     }
     ball.setProjectionMatrix(projection);
+    player.setProjectionMatrix(projection);
 }
 
 void GLWindow::paintGL()
@@ -58,7 +85,10 @@ void GLWindow::paintGL()
 
     // Render the background
     backgroundRenderer.render();
-    ball.render();  // Render the ball
+    // Render the ball
+    ball.render();
+    // Render the player
+    player.render();
 }
 
 void GLWindow::updateAnimation()
@@ -67,5 +97,6 @@ void GLWindow::updateAnimation()
     if (ball.isJumping()) {
         ball.updateAnimationFrame();
     }
+    player.updateAnimationFrame();
     update(); // Request a repaint to update the animation and physics
 }

@@ -24,6 +24,7 @@ SOURCES += \
     ball.cpp \
     glWindow.cpp \
     main.cpp \
+    player.cpp \
     shader.cpp \
     texture.cpp
 
@@ -31,6 +32,7 @@ HEADERS += \
     backgroundRenderer.h \
     ball.h \
     glWindow.h \
+    player.h \
     shader.h \
     texture.h
 
