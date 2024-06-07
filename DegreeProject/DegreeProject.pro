@@ -21,6 +21,7 @@ TEMPLATE = app
 
 SOURCES += \
     backgroundRenderer.cpp \
+    ball.cpp \
     glWindow.cpp \
     main.cpp \
     shader.cpp \
@@ -28,12 +29,10 @@ SOURCES += \
 
 HEADERS += \
     backgroundRenderer.h \
+    ball.h \
     glWindow.h \
     shader.h \
     texture.h
-
-FORMS += \
-    ball.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
