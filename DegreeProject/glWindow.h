@@ -3,8 +3,7 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_Core>
-#include "texture.h"
-#include "shader.h"
+#include "backgroundRenderer.h"
 
 class GLWindow : public QOpenGLWidget, public QOpenGLFunctions_3_3_Core
 {
@@ -20,11 +19,7 @@ protected:
     void paintGL() override;
 
 private:
-    Texture *texture;
-    Shader *shaderProgram;
-    GLuint VBO, VAO, EBO;
-
-    void setupShaders();
+    BackgroundRenderer backgroundRenderer;
 };
 
 #endif // GLWINDOW_H

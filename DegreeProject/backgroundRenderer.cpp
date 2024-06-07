@@ -1,31 +1,25 @@
-#include "glwindow.h"
-#include <QOpenGLShaderProgram>
+#include "backgroundRenderer.h"
 
-GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), texture(new Texture), shaderProgram(new Shader)
-{
-    // Set window flags to prevent resizing
-    setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
+BackgroundRenderer::BackgroundRenderer() : VAO(0), VBO(0), EBO(0) {}
+
+BackgroundRenderer::~BackgroundRenderer() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
 
-GLWindow::~GLWindow()
-{
-    delete texture;
-    delete shaderProgram;
-}
+void BackgroundRenderer::initialize(const QString &texturePath) {
+    initializeOpenGLFunctions();
 
-void GLWindow::initializeGL()
-{
-    initializeOpenGLFunctions();  // Initialize OpenGL functions
+    texture.initializeOpenGLFunctions();
+    texture.load(texturePath);
 
-    texture->initializeOpenGLFunctions();
-
-    // Load the texture
-    texture->load("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
-
-    // Setup shaders
-    shaderProgram->initialize();
+    shader.initialize();
     setupShaders();
+    setupBuffers();
+}
 
+void BackgroundRenderer::setupBuffers() {
     GLfloat vertices[] = {
         // Positions          // Texture Coords
         -1.0f, -1.0f, 0.0f,   0.0f, 1.0f, // Bottom-left
@@ -53,41 +47,13 @@ void GLWindow::initializeGL()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
-
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 }
 
-void GLWindow::resizeGL(int w, int h)
-{
-    glViewport(0, 0, w, h);
-}
-
-void GLWindow::paintGL()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Use shader program
-    shaderProgram->bind();
-
-    // Bind texture
-    texture->bind();
-
-    // Render container
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-
-    // Unbind texture
-    texture->release();
-
-    shaderProgram->release();
-}
-
-void GLWindow::setupShaders()
-{
+void BackgroundRenderer::setupShaders() {
     const char *vertexShaderSource = R"(
         #version 330 core
         layout(location = 0) in vec3 position;
@@ -115,7 +81,17 @@ void GLWindow::setupShaders()
         }
     )";
 
-    shaderProgram->addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
-    shaderProgram->addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    shaderProgram->link();
+    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
+    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
+    shader.link();
+}
+
+void BackgroundRenderer::render() {
+    shader.bind();
+    texture.bind();
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    texture.release();
+    shader.release();
 }

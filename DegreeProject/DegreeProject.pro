@@ -20,13 +20,15 @@ TARGET = My2DFootballGame
 TEMPLATE = app
 
 SOURCES += \
-    glwindow.cpp \
+    backgroundRenderer.cpp \
+    glWindow.cpp \
     main.cpp \
     shader.cpp \
     texture.cpp
 
 HEADERS += \
-    glwindow.h \
+    backgroundRenderer.h \
+    glWindow.h \
     shader.h \
     texture.h
 
