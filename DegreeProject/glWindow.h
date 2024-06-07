@@ -14,6 +14,8 @@ public:
     explicit GLWindow(QWidget *parent = nullptr);
     ~GLWindow();
 
+    void GLWindow::updateAnimation();
+
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;

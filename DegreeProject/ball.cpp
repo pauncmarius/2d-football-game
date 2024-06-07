@@ -1,7 +1,7 @@
 #include "ball.h"
 #include <cmath>
 
-Ball::Ball() : VAO(0), VBO(0), EBO(0), texture(nullptr), radius(0.05f) {
+Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0) {
     position[0] = 0.0f;
     position[1] = 0.9f;
 }
@@ -10,20 +10,24 @@ Ball::~Ball() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    if (texture) {
+    for (auto texture : textures) {
         delete texture;
     }
 }
 
-void Ball::initialize(const QString &texturePath) {
+void Ball::initialize(const std::vector<QString> &texturePaths) {
     initializeOpenGLFunctions();
     setupShaders();
     setupBuffers();
 
-    texture = new QOpenGLTexture(QImage(texturePath).mirrored());
-    texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
+    numFrames = texturePaths.size();
+        for (const auto& texturePath : texturePaths) {
+            QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).mirrored());
+            texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+            texture->setMagnificationFilter(QOpenGLTexture::Linear);
+            texture->setWrapMode(QOpenGLTexture::Repeat);
+            textures.push_back(texture);
+        }
 }
 
 void Ball::setupShaders() {
@@ -111,16 +115,24 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
     projectionMatrix = projection;
 }
 
+void Ball::updateAnimationFrame() {
+    frameCounter++;
+    if (frameCounter >= 10) { // Adjust the number of frames to control the speed
+        frameCounter = 0;
+        currentFrame = (currentFrame + 1) % numFrames;
+    }
+}
+
 void Ball::render() {
     shader.bind();
     shader.setUniformValue("projection", projectionMatrix);
     shader.setUniformValue("ballPosition", position[0], position[1]);
     shader.setUniformValue("ballRadius", radius);
-    texture->bind();
+    textures[currentFrame]->bind();
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, 0); // numSegments * 3
     glBindVertexArray(0);
-    texture->release();
+    textures[currentFrame]->release();
     shader.release();
 }

@@ -1,11 +1,18 @@
 #include "glWindow.h"
 #include <QOpenGLShaderProgram>
 #include <QMatrix4x4>
+#include <QTimer>
+
 
 GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent)
 {
     // Set window flags to prevent resizing
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
+
+    // Create a timer to update the animation
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &GLWindow::updateAnimation);
+    timer->start(16); // Adjust the interval to control the animation speed
 }
 
 GLWindow::~GLWindow(){}
@@ -16,7 +23,15 @@ void GLWindow::initializeGL()
 
     // Initialize the background renderer
     backgroundRenderer.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
-    ball.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png");  // Initialize the ball with texture
+
+    // Initialize the ball with texture paths for the animation frames
+    std::vector<QString> texturePaths = {
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball2.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball3.png",
+        "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball4.png"
+    };
+    ball.initialize(texturePaths);
 
     // Set the initial projection matrix
     QMatrix4x4 projection;
@@ -47,4 +62,10 @@ void GLWindow::paintGL()
     backgroundRenderer.render();
     // Render the ball
     ball.render();
+}
+
+void GLWindow::updateAnimation()
+{
+    ball.updateAnimationFrame();
+    update(); // Request a repaint to update the animation
 }
