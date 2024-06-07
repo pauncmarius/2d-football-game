@@ -3,7 +3,7 @@
 
 #include <QOpenGLFunctions_3_3_Core>
 
-class Shader : public QOpenGLFunctions_3_3_Core
+class Shader : protected QOpenGLFunctions_3_3_Core
 {
 public:
     Shader();

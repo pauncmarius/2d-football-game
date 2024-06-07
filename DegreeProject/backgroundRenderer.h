@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "shader.h"
 
-class BackgroundRenderer : public QOpenGLFunctions_3_3_Core {
+class BackgroundRenderer : protected QOpenGLFunctions_3_3_Core {
 public:
     BackgroundRenderer();
     ~BackgroundRenderer();

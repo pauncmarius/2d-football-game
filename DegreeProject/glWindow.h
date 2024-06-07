@@ -6,7 +6,7 @@
 #include "backgroundRenderer.h"
 #include "ball.h"
 
-class GLWindow : public QOpenGLWidget, public QOpenGLFunctions_3_3_Core
+class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
     Q_OBJECT
 

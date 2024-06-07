@@ -1,10 +1,9 @@
-// Ball.cpp
 #include "ball.h"
 #include <cmath>
 
 Ball::Ball() : VAO(0), VBO(0), EBO(0), texture(nullptr), radius(0.05f) {
     position[0] = 0.0f;
-    position[1] = 0.0f;
+    position[1] = 0.9f;
 }
 
 Ball::~Ball() {
@@ -35,11 +34,12 @@ void Ball::setupShaders() {
 
         out vec2 TexCoord;
 
+        uniform mat4 projection;
         uniform vec2 ballPosition;
         uniform float ballRadius;
 
         void main() {
-            gl_Position = vec4(position * ballRadius + ballPosition, 0.0, 1.0);
+            gl_Position = projection * vec4(position * ballRadius + ballPosition, 0.0, 1.0);
             TexCoord = texCoord;
         }
     )";
@@ -107,8 +107,13 @@ void Ball::setupBuffers() {
     glBindVertexArray(0);
 }
 
+void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
+    projectionMatrix = projection;
+}
+
 void Ball::render() {
     shader.bind();
+    shader.setUniformValue("projection", projectionMatrix);
     shader.setUniformValue("ballPosition", position[0], position[1]);
     shader.setUniformValue("ballRadius", radius);
     texture->bind();
