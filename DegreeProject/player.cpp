@@ -212,3 +212,9 @@ QPointF Player::getPosition() const
 {
     return QPointF(position[0], position[1]);
 }
+
+void Player::setPosition(float x, float y)
+{
+    position[0] = x;
+    position[1] = y;
+}

@@ -33,6 +33,7 @@ public:
     void kick();
     QPointF getPosition() const;
     void setTransparency(float alpha);
+    void setPosition(float x, float y);
 
 
 private:

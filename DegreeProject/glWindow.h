@@ -36,7 +36,8 @@ private:
     bool kick;
 
     DebugRectangle debugRectangle;
-    QRectF goalZone; // Define the goal area
+    QRectF goalZoneLeft;
+    QRectF goalZoneRight;
 
 };
 

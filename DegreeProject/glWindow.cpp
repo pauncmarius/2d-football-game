@@ -23,7 +23,9 @@ void GLWindow::initializeGL()
     // Initialize the background renderer
     backgroundRenderer.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
-    goalZone = QRectF(-1.8f, -0.4f, 0.3f, 0.7f);
+    goalZoneLeft = QRectF(-1.8f, -0.4f, 0.3f, 0.7f);
+    goalZoneRight = QRectF(1.455f, -0.4f, 0.3f, 0.7f);
+
 
     // Initialize the ball with texture paths for the animation frames
     std::vector<QString> ballTexturePaths = {
@@ -116,7 +118,11 @@ void GLWindow::initializeGL()
 
     // Initialize and configure the debug rectangle
     debugRectangle.initialize();
-    debugRectangle.setRectangle(goalZone);
+/*  debugRectangle.setRectangle(goalZoneLeft);
+    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+    debugRectangle.setProjectionMatrix(projection);*/
+
+    debugRectangle.setRectangle(goalZoneRight);
     debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
     debugRectangle.setProjectionMatrix(projection);
 }
@@ -169,7 +175,7 @@ void GLWindow::updateAnimation()
         } else if (moveRight) {
             player.move(0.01f);
         }
-    } else if (jump) {
+    } else if (jump && !goalZoneLeft.contains(player.getPosition()) && !goalZoneRight.contains(player.getPosition())) {
         player.jump();
         if (moveLeft) {
             player.move(-0.02f);
@@ -189,12 +195,19 @@ void GLWindow::updateAnimation()
     }
 
     // Check if player is in the goal zone
-    if (goalZone.contains(player.getPosition())) {
+    if (goalZoneLeft.contains(player.getPosition()) || goalZoneRight.contains(player.getPosition())) {
         player.setTransparency(0.8f); // Set transparency to 50%
     } else {
         player.setTransparency(1.0f); // Reset transparency to 100%
     }
 
+    // Window's borders for players
+    QPointF playerPos = player.getPosition();
+    if (playerPos.x() < -1.7f) {
+        player.setPosition(-1.7f, playerPos.y());
+    } else if (playerPos.x() > 1.7f) {
+        player.setPosition(1.7f, playerPos.y());
+    }
 
     player.updateAnimationFrame();
     update(); // Request a repaint to update the animation and physics
