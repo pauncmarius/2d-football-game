@@ -72,10 +72,11 @@ void Player::setupShaders()
         out vec4 color;
 
         uniform sampler2D playerTexture;
+        uniform float alpha; // Add alpha uniform
 
         void main() {
             vec4 texColor = texture(playerTexture, TexCoord);
-            color = texColor;
+            color = vec4(texColor.rgb, texColor.a * alpha); // Apply alpha
         }
     )";
 
@@ -198,4 +199,16 @@ void Player::jump()
 void Player::kick()
 {
     setState(Kick);
+}
+
+void Player::setTransparency(float alpha)
+{
+    shader.bind();
+    shader.setUniformValue("alpha", alpha);
+    shader.release();
+}
+
+QPointF Player::getPosition() const
+{
+    return QPointF(position[0], position[1]);
 }

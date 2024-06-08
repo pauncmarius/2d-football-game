@@ -31,6 +31,9 @@ public:
     void move(float dx);
     void jump();
     void kick();
+    QPointF getPosition() const;
+    void setTransparency(float alpha);
+
 
 private:
     GLuint VAO, VBO, EBO;

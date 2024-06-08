@@ -33,6 +33,9 @@ private:
     bool moveRight;
     bool jump;
     bool kick;
+
+    QRectF goalZone; // Define the goal area
+
 };
 
 #endif // GLWINDOW_H

@@ -23,6 +23,8 @@ void GLWindow::initializeGL()
     // Initialize the background renderer
     backgroundRenderer.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
+    goalZone = QRectF(-0.2f, -1.0f, 0.4f, 2.0f);
+
     // Initialize the ball with texture paths for the animation frames
     std::vector<QString> ballTexturePaths = {
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png",
@@ -176,6 +178,14 @@ void GLWindow::updateAnimation()
             player.setState(Idle);
         }
     }
+
+    // Check if player is in the goal zone
+    if (goalZone.contains(player.getPosition())) {
+        player.setTransparency(0.9f); // Set transparency to 50%
+    } else {
+        player.setTransparency(1.0f); // Reset transparency to 100%
+    }
+
 
     player.updateAnimationFrame();
     update(); // Request a repaint to update the animation and physics
