@@ -6,29 +6,38 @@
 #include <QOpenGLTexture>
 #include <QMatrix4x4>
 #include <vector>
+#include <map>
+
+enum PlayerState {
+    Idle,
+    MoveLeft,
+    MoveRight
+};
 
 class Player : protected QOpenGLFunctions_3_3_Core
 {
 public:
     Player();
     ~Player();
-    void initialize(const std::vector<QString> &texturePaths);
+    void initialize(const std::map<PlayerState, std::vector<QString>> &texturePaths);
     void render();
     void setProjectionMatrix(const QMatrix4x4 &projection);
     void updateAnimationFrame();
     void setScale(float widthScale, float heightScale);
-
+    void setState(PlayerState state);
+    void move(float dx);
 
 private:
     GLuint VAO, VBO, EBO;
     QOpenGLShaderProgram shader;
-    std::vector<QOpenGLTexture*> textures;
+    std::map<PlayerState, std::vector<QOpenGLTexture*>> textures;
+    PlayerState currentState;
     float position[2];
     float widthScale, heightScale;
     QMatrix4x4 projectionMatrix;
     int currentFrame;
-    int numFrames;
     int frameCounter;
+    std::map<PlayerState, int> numFrames;
 
     void setupShaders();
     void setupBuffers();

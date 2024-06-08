@@ -3,10 +3,10 @@
 #include <QImage>
 #include <QDebug>
 
-Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0)
+Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0), currentState(Idle)
 {
     position[0] = -1.4f; // Position close to the left border
-    position[1] = -0.18f; // Ground level
+    position[1] = -0.19f; // Ground level
 }
 
 Player::~Player()
@@ -14,12 +14,14 @@ Player::~Player()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    for (auto texture : textures) {
-        delete texture;
+    for (auto &textureList : textures) {
+        for (auto texture : textureList.second) {
+            delete texture;
+        }
     }
 }
 
-void Player::initialize(const std::vector<QString> &texturePaths)
+void Player::initialize(const std::map<PlayerState, std::vector<QString>> &texturePaths)
 {
     initializeOpenGLFunctions();
     setupShaders();
@@ -29,13 +31,17 @@ void Player::initialize(const std::vector<QString> &texturePaths)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    numFrames = texturePaths.size();
-    for (const auto& texturePath : texturePaths) {
-        QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).convertToFormat(QImage::Format_RGBA8888));
-        texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-        texture->setMagnificationFilter(QOpenGLTexture::Linear);
-        texture->setWrapMode(QOpenGLTexture::Repeat);
-        textures.push_back(texture);
+    for (const auto &pair : texturePaths) {
+        PlayerState state = pair.first;
+        const std::vector<QString> &paths = pair.second;
+        numFrames[state] = paths.size();
+        for (const auto& texturePath : paths) {
+            QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).convertToFormat(QImage::Format_RGBA8888));
+            texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+            texture->setMagnificationFilter(QOpenGLTexture::Linear);
+            texture->setWrapMode(QOpenGLTexture::Repeat);
+            textures[state].push_back(texture);
+        }
     }
 }
 
@@ -124,7 +130,7 @@ void Player::updateAnimationFrame()
     frameCounter++;
     if (frameCounter >= 5) { // Adjust the number of frames to control the speed
         frameCounter = 0;
-        currentFrame = (currentFrame + 1) % numFrames;
+        currentFrame = (currentFrame + 1) % numFrames[currentState];
     }
 }
 
@@ -135,13 +141,13 @@ void Player::render()
     shader.setUniformValue("playerPosition", position[0], position[1]);
     shader.setUniformValue("widthScale", widthScale);
     shader.setUniformValue("heightScale", heightScale);
-    textures[currentFrame]->bind();
+    textures[currentState][currentFrame]->bind();
     shader.setUniformValue("playerTexture", 0);
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Render the rectangle
     glBindVertexArray(0);
-    textures[currentFrame]->release();
+    textures[currentState][currentFrame]->release();
     shader.release();
 }
 
@@ -149,4 +155,17 @@ void Player::setScale(float width, float height)
 {
     widthScale = width;
     heightScale = height;
+}
+
+void Player::setState(PlayerState state)
+{
+    if (currentState != state) {
+        currentState = state;
+        currentFrame = 0; // Reset frame to the start of the new animation
+    }
+}
+
+void Player::move(float dx)
+{
+    position[0] += dx;
 }
