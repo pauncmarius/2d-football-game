@@ -23,7 +23,7 @@ void GLWindow::initializeGL()
     // Initialize the background renderer
     backgroundRenderer.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
-    goalZone = QRectF(-0.2f, -1.0f, 0.4f, 2.0f);
+    goalZone = QRectF(-0.2f, -1.0f, 0.4f, 1.0f);
 
     // Initialize the ball with texture paths for the animation frames
     std::vector<QString> ballTexturePaths = {
@@ -113,6 +113,12 @@ void GLWindow::initializeGL()
     projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
+
+    // Initialize and configure the debug rectangle
+    debugRectangle.initialize();
+    debugRectangle.setRectangle(goalZone);
+    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+    debugRectangle.setProjectionMatrix(projection);
 }
 
 void GLWindow::resizeGL(int w, int h)
@@ -129,6 +135,7 @@ void GLWindow::resizeGL(int w, int h)
     }
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
+    debugRectangle.setProjectionMatrix(projection);
 }
 
 void GLWindow::paintGL()
@@ -141,6 +148,8 @@ void GLWindow::paintGL()
     ball.render();
     // Render the player
     player.render();
+    // Draw the debug rectangle for the goal zone
+    debugRectangle.render();
 }
 
 void GLWindow::updateAnimation()

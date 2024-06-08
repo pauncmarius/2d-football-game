@@ -22,6 +22,7 @@ TEMPLATE = app
 SOURCES += \
     backgroundRenderer.cpp \
     ball.cpp \
+    debugRectangle.cpp \
     glWindow.cpp \
     main.cpp \
     player.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     backgroundRenderer.h \
     ball.h \
+    debugRectangle.h \
     glWindow.h \
     player.h \
     shader.h \

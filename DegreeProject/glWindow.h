@@ -6,6 +6,7 @@
 #include "backgroundRenderer.h"
 #include "ball.h"
 #include "player.h"
+#include "debugRectangle.h"
 
 class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
@@ -34,6 +35,7 @@ private:
     bool jump;
     bool kick;
 
+    DebugRectangle debugRectangle;
     QRectF goalZone; // Define the goal area
 
 };
