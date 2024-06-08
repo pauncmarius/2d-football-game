@@ -3,10 +3,10 @@
 #include <QImage>
 #include <QDebug>
 
-Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0), currentState(Idle)
+Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0), currentState(Idle), velocityY(0.0f), isJumping(false)
 {
     position[0] = -1.4f; // Position close to the left border
-    position[1] = -0.19f; // Ground level
+    position[1] = -0.18f; // Ground level
 }
 
 Player::~Player()
@@ -132,6 +132,22 @@ void Player::updateAnimationFrame()
         frameCounter = 0;
         currentFrame = (currentFrame + 1) % numFrames[currentState];
     }
+
+    // Update jumping logic
+    if (isJumping) {
+        position[1] += velocityY;
+        velocityY -= 0.005f; // Gravity effect
+
+        if (velocityY < 0.0f) {
+            setState(FallDown);
+        }
+        if (position[1] <= -0.18f) { // Ground level
+            position[1] = -0.18f;
+            isJumping = false;
+            velocityY = 0.0f;
+            setState(Idle);
+        }
+    }
 }
 
 void Player::render()
@@ -168,4 +184,13 @@ void Player::setState(PlayerState state)
 void Player::move(float dx)
 {
     position[0] += dx;
+}
+
+void Player::jump()
+{
+    if (!isJumping) {
+        isJumping = true;
+        velocityY = 0.055f; // Initial jump velocity
+        setState(JumpUp);
+    }
 }

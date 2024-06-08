@@ -31,6 +31,7 @@ private:
     Player player;
     bool moveLeft;
     bool moveRight;
+    bool jump;
 };
 
 #endif // GLWINDOW_H

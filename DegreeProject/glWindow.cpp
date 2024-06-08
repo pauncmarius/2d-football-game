@@ -3,7 +3,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 
-GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false)
+GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false)
 {
     // Set window flags to prevent resizing
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
@@ -32,7 +32,7 @@ void GLWindow::initializeGL()
     };
     ball.initialize(ballTexturePaths);
 
-    // Initialize the player with texture paths for the idle, move left, and move right animations
+    // Initialize the player with texture paths for the idle, move left, move right, jump up, and fall down animations
     std::map<PlayerState, std::vector<QString>> playerTexturePaths = {
         {Idle, {
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_000.png",
@@ -77,6 +77,20 @@ void GLWindow::initializeGL()
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Move Forward/Move Forward_007.png",
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Move Forward/Move Forward_008.png",
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Move Forward/Move Forward_009.png"
+        }},
+        {JumpUp, {
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Jump/Jump_000.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Jump/Jump_001.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Jump/Jump_002.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Jump/Jump_003.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Jump/Jump_004.png"
+        }},
+        {FallDown, {
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_000.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_001.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_002.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_003.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_004.png"
         }}
     };
 
@@ -126,14 +140,23 @@ void GLWindow::updateAnimation()
         ball.updateAnimationFrame();
     }
 
-    if (moveLeft) {
-        player.setState(MoveLeft);
-        player.move(-0.02f);  // Adjust the value as needed for the desired speed
-    } else if (moveRight) {
-        player.setState(MoveRight);
-        player.move(0.02f);   // Adjust the value as needed for the desired speed
+    if (jump) {
+        player.jump();
+        if (moveLeft) {
+            player.move(-0.02f);
+        } else if (moveRight) {
+            player.move(0.02f);
+        }
     } else {
-        player.setState(Idle);
+        if (moveLeft) {
+            player.setState(MoveLeft);
+            player.move(-0.02f);
+        } else if (moveRight) {
+            player.setState(MoveRight);
+            player.move(0.02f);
+        } else {
+            player.setState(Idle);
+        }
     }
 
     player.updateAnimationFrame();
@@ -149,6 +172,9 @@ void GLWindow::keyPressEvent(QKeyEvent *event)
         case Qt::Key_D:
             moveRight = true;
             break;
+        case Qt::Key_W:
+            jump = true;
+            break;
         default:
             QOpenGLWidget::keyPressEvent(event);
     }
@@ -162,6 +188,9 @@ void GLWindow::keyReleaseEvent(QKeyEvent *event)
             break;
         case Qt::Key_D:
             moveRight = false;
+            break;
+        case Qt::Key_W:
+            jump = false;
             break;
         default:
             QOpenGLWidget::keyReleaseEvent(event);
