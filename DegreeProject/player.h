@@ -13,7 +13,8 @@ enum PlayerState {
     MoveLeft,
     MoveRight,
     JumpUp,
-    FallDown
+    FallDown,
+    Kick
 };
 
 class Player : protected QOpenGLFunctions_3_3_Core
@@ -29,6 +30,7 @@ public:
     void setState(PlayerState state);
     void move(float dx);
     void jump();
+    void kick();
 
 private:
     GLuint VAO, VBO, EBO;

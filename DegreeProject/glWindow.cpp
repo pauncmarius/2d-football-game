@@ -3,7 +3,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 
-GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false)
+GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false)
 {
     // Set window flags to prevent resizing
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
@@ -32,7 +32,7 @@ void GLWindow::initializeGL()
     };
     ball.initialize(ballTexturePaths);
 
-    // Initialize the player with texture paths for the idle, move left, move right, jump up, and fall down animations
+    // Initialize the player with texture paths for the idle, move left, move right, jump up, fall down, and kick animations
     std::map<PlayerState, std::vector<QString>> playerTexturePaths = {
         {Idle, {
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_000.png",
@@ -91,6 +91,14 @@ void GLWindow::initializeGL()
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_002.png",
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_003.png",
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Fall/Falling Down_004.png"
+        }},
+        {Kick, {
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Kick/Kick_000.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Kick/Kick_001.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Kick/Kick_002.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Kick/Kick_003.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Kick/Kick_004.png",
+            "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Kick/Kick_005.png"
         }}
     };
 
@@ -140,7 +148,17 @@ void GLWindow::updateAnimation()
         ball.updateAnimationFrame();
     }
 
-    if (jump) {
+    if (kick) {
+        player.kick();
+        if (jump) {
+            player.jump();
+        }
+        if (moveLeft) {
+            player.move(-0.01f);
+        } else if (moveRight) {
+            player.move(0.01f);
+        }
+    } else if (jump) {
         player.jump();
         if (moveLeft) {
             player.move(-0.02f);
@@ -175,6 +193,9 @@ void GLWindow::keyPressEvent(QKeyEvent *event)
         case Qt::Key_W:
             jump = true;
             break;
+        case Qt::Key_M:
+            kick = true;
+            break;
         default:
             QOpenGLWidget::keyPressEvent(event);
     }
@@ -191,6 +212,9 @@ void GLWindow::keyReleaseEvent(QKeyEvent *event)
             break;
         case Qt::Key_W:
             jump = false;
+            break;
+        case Qt::Key_M:
+            kick = false;
             break;
         default:
             QOpenGLWidget::keyReleaseEvent(event);

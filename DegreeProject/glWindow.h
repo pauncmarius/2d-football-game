@@ -32,6 +32,7 @@ private:
     bool moveLeft;
     bool moveRight;
     bool jump;
+    bool kick;
 };
 
 #endif // GLWINDOW_H
