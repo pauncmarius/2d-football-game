@@ -27,6 +27,7 @@ SOURCES += \
     main.cpp \
     player.cpp \
     shader.cpp \
+    shadow.cpp \
     texture.cpp
 
 HEADERS += \
@@ -36,6 +37,7 @@ HEADERS += \
     glWindow.h \
     player.h \
     shader.h \
+    shadow.h \
     texture.h
 
 # Default rules for deployment.

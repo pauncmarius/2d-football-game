@@ -17,7 +17,8 @@ Shader::~Shader()
 
 void Shader::initialize()
 {
-    initializeOpenGLFunctions();  // Initialize OpenGL functions here
+    // Initialize OpenGL functions here
+    initializeOpenGLFunctions();
     program = glCreateProgram();
     if (program == 0) {
         qDebug() << "ERROR::PROGRAM_CREATION_ERROR\n Failed to create shader program.";

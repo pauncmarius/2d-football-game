@@ -7,6 +7,7 @@
 #include "ball.h"
 #include "player.h"
 #include "debugRectangle.h"
+#include "shadow.h"
 
 class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
@@ -30,6 +31,9 @@ private:
     BackgroundRenderer backgroundRenderer;
     Ball ball;
     Player player;
+    Shadow ballShadow;
+    Shadow playerShadow;
+
     bool moveLeft;
     bool moveRight;
     bool jump;
@@ -38,6 +42,8 @@ private:
     DebugRectangle debugRectangle;
     QRectF goalZoneLeft;
     QRectF goalZoneRight;
+
+    QMatrix4x4 projection;
 
 };
 

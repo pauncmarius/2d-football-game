@@ -6,7 +6,7 @@
 Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0), currentState(Idle), velocityY(0.0f), isJumping(false)
 {
     position[0] = -1.4f; // Position close to the left border
-    position[1] = -0.19f; // Ground level
+    position[1] = -0.17f; // Ground level
 }
 
 Player::~Player()
@@ -129,7 +129,8 @@ void Player::setProjectionMatrix(const QMatrix4x4 &projection)
 void Player::updateAnimationFrame()
 {
     frameCounter++;
-    if (frameCounter >= 5) { // Adjust the number of frames to control the speed
+    // Adjust the number of frames to control the speed
+    if (frameCounter >= 5) {
         frameCounter = 0;
         currentFrame = (currentFrame + 1) % numFrames[currentState];
     }
@@ -142,8 +143,8 @@ void Player::updateAnimationFrame()
         if (velocityY < 0.0f && currentState != Kick) {
             setState(FallDown);
         }
-        if (position[1] <= -0.19f) { // Ground level
-            position[1] = -0.19f;
+        if (position[1] <= -0.17f) { // Ground level
+            position[1] = -0.17f;
             isJumping = false;
             velocityY = 0.0f;
             setState(Idle);
@@ -162,7 +163,7 @@ void Player::render()
     shader.setUniformValue("playerTexture", 0);
     glBindVertexArray(VAO);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Render the rectangle
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     textures[currentState][currentFrame]->release();
     shader.release();
@@ -178,7 +179,8 @@ void Player::setState(PlayerState state)
 {
     if (currentState != state) {
         currentState = state;
-        currentFrame = 0; // Reset frame to the start of the new animation
+        // Reset frame to the start of the new animation
+        currentFrame = 0;
     }
 }
 
@@ -191,7 +193,8 @@ void Player::jump()
 {
     if (!isJumping) {
         isJumping = true;
-        velocityY = 0.055f; // Initial jump velocity
+        // Initial jump velocity
+        velocityY = 0.055f;
         setState(JumpUp);
     }
 }

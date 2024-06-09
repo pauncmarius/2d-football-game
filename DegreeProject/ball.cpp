@@ -7,7 +7,8 @@ Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCoun
     velocity[0] = 0.0f;
     velocity[1] = 0.0f;
     acceleration[0] = 0.0f;
-    acceleration[1] = -12.0f; // Gravity
+    // Gravity
+    acceleration[1] = -12.0f;
 }
 
 Ball::~Ball() {
@@ -76,16 +77,19 @@ void Ball::setupBuffers() {
     GLfloat vertices[(numSegments + 2) * 4];
     GLuint indices[numSegments * 3];
 
-    vertices[0] = 0.0f; // Center of the circle
+    // Center of the circle
+    vertices[0] = 0.0f;
     vertices[1] = 0.0f;
-    vertices[2] = 0.5f; // Center texture coordinate
+    // Center texture coordinate
+    vertices[2] = 0.5f;
     vertices[3] = 0.5f;
 
     for (int i = 1; i <= numSegments + 1; ++i) {
         float angle = i * angleIncrement;
         vertices[i * 4] = cos(angle);
         vertices[i * 4 + 1] = sin(angle);
-        vertices[i * 4 + 2] = cos(angle) * 0.5f + 0.5f; // Texture coordinates
+        // Texture coordinates
+        vertices[i * 4 + 2] = cos(angle) * 0.5f + 0.5f;
         vertices[i * 4 + 3] = sin(angle) * 0.5f + 0.5f;
     }
 
@@ -121,14 +125,15 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
 
 void Ball::updatePhysics() {
     if (jumping) {
-        velocity[1] += acceleration[1] * 0.016f; // Update velocity with acceleration
-        position[1] += velocity[1] * 0.016f; // Update position with velocity
+        velocity[1] += acceleration[1] * 0.016f;
+        position[1] += velocity[1] * 0.016f;
 
-        if (position[1] <= -0.3f) { // The ground level
-            position[1] = -0.3f;
-            velocity[1] = -velocity[1] * dampingFactor; // Reverse and reduce velocity
+        if (position[1] <= -0.28f) { // The ground level
+            position[1] = -0.28f;
+            //reduce velocity
+            velocity[1] = -velocity[1] * dampingFactor;
 
-            if (fabs(velocity[1]) < 0.01f) { // If the velocity is very small, stop the ball
+            if (fabs(velocity[1]) < 0.01f) {
                 velocity[1] = 0.0f;
                 jumping = false;
             }
@@ -143,7 +148,8 @@ bool Ball::isJumping() const {
 void Ball::updateAnimationFrame() {
     if (jumping) {
         frameCounter++;
-        if (frameCounter >= 10) { // Adjust the number of frames to control the speed
+        // Adjust the number of frames to control the speed
+        if (frameCounter >= 10) {
             frameCounter = 0;
             currentFrame = (currentFrame + 1) % numFrames;
         }
@@ -162,4 +168,8 @@ void Ball::render() {
     glBindVertexArray(0);
     textures[currentFrame]->release();
     shader.release();
+}
+
+QPointF Ball::getPosition() const {
+    return QPointF(position[0], position[1]);
 }

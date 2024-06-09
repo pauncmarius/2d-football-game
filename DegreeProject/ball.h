@@ -17,6 +17,7 @@ public:
     void updatePhysics();
     bool isJumping() const;
     void updateAnimationFrame();
+    QPointF getPosition() const;
 
 private:
     GLuint VAO, VBO, EBO;

@@ -117,14 +117,18 @@ void GLWindow::initializeGL()
     player.setProjectionMatrix(projection);
 
     // Initialize and configure the debug rectangle
-    debugRectangle.initialize();
-/*  debugRectangle.setRectangle(goalZoneLeft);
-    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
-    debugRectangle.setProjectionMatrix(projection);*/
+//    debugRectangle.initialize();
+//    debugRectangle.setRectangle(goalZoneLeft);
+//    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+//    debugRectangle.setProjectionMatrix(projection);
 
-    debugRectangle.setRectangle(goalZoneRight);
-    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
-    debugRectangle.setProjectionMatrix(projection);
+//    debugRectangle.setRectangle(goalZoneRight);
+//    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+//    debugRectangle.setProjectionMatrix(projection);
+
+    // Initialize and configure the shadows
+    ballShadow.initialize();
+    playerShadow.initialize();
 }
 
 void GLWindow::resizeGL(int w, int h)
@@ -132,13 +136,9 @@ void GLWindow::resizeGL(int w, int h)
     glViewport(0, 0, w, h);
 
     // Adjust the projection matrix to maintain the aspect ratio
-    QMatrix4x4 projection;
     float aspect = float(w) / float(h);
-    if (aspect >= 1.0f) {
-        projection.ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-    } else {
-        projection.ortho(-1.0f, 1.0f, -1.0f / aspect, 1.0f / aspect, -1.0f, 1.0f);
-    }
+    projection.ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
     debugRectangle.setProjectionMatrix(projection);
@@ -150,12 +150,37 @@ void GLWindow::paintGL()
 
     // Render the background
     backgroundRenderer.render();
+    // Draw the debug rectangle for the goal zone
+    //debugRectangle.render();
+
+    QMatrix4x4 projectionTemp;
+    projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
+
+    // Apply scaling transformation to squash the circle
+    QMatrix4x4 scalingMatrix;
+    scalingMatrix.scale(1.0f, 0.3f); // Adjust the y-scale factor to squash the circle
+
+    // Combine the transformations
+    projectionTemp = projectionTemp * scalingMatrix;
+
+    // Render the ball shadow
+    QPointF ballPosition = ball.getPosition();
+    // Scale the shadow based on height
+    float ballShadowScale = 0.065f + (ballPosition.y() * 0.05f);
+    // Transparency based on height
+    float ballShadowTransparency = 0.2f - ballPosition.y();
+    ballShadow.render(projectionTemp, ballPosition.x(), -1.1f, ballShadowScale, ballShadowTransparency);
+
+    // Render the player shadow
+    QPointF playerPosition = player.getPosition();
+    float playerShadowScale = 0.035f + (0.05f - playerPosition.y() * 0.05f);
+    float playerShadowTransparency = 0.2f - playerPosition.y();
+    playerShadow.render(projectionTemp, playerPosition.x(), -1.1f, playerShadowScale, playerShadowTransparency);
+
     // Render the ball
     ball.render();
     // Render the player
     player.render();
-    // Draw the debug rectangle for the goal zone
-    //debugRectangle.render();
 }
 
 void GLWindow::updateAnimation()
@@ -196,9 +221,9 @@ void GLWindow::updateAnimation()
 
     // Check if player is in the goal zone
     if (goalZoneLeft.contains(player.getPosition()) || goalZoneRight.contains(player.getPosition())) {
-        player.setTransparency(0.8f); // Set transparency to 50%
+        player.setTransparency(0.8f);
     } else {
-        player.setTransparency(1.0f); // Reset transparency to 100%
+        player.setTransparency(1.0f);
     }
 
     // Window's borders for players
@@ -210,7 +235,8 @@ void GLWindow::updateAnimation()
     }
 
     player.updateAnimationFrame();
-    update(); // Request a repaint to update the animation and physics
+    // Request a repaint
+    update();
 }
 
 void GLWindow::keyPressEvent(QKeyEvent *event)
