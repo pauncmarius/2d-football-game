@@ -1,5 +1,4 @@
 #include "glWindow.h"
-#include <QOpenGLShaderProgram>
 #include <QTimer>
 #include <QKeyEvent>
 

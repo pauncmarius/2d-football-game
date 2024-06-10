@@ -2,7 +2,7 @@
 #define SHADOW_H
 
 #include <QOpenGLFunctions_3_3_Core>
-#include <QOpenGLShaderProgram>
+#include "shader.h"
 #include <QMatrix4x4>
 
 class Shadow : protected QOpenGLFunctions_3_3_Core
@@ -16,8 +16,7 @@ public:
 
 private:
     GLuint VAO, VBO, EBO;
-    QOpenGLShaderProgram shader;
-
+    Shader shader;
     void setupShaders();
     void setupBuffers();
 };

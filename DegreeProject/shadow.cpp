@@ -12,6 +12,7 @@ Shadow::~Shadow()
 void Shadow::init()
 {
     initializeOpenGLFunctions();
+    shader.init();
     setupShaders();
     setupBuffers();
 }
@@ -42,8 +43,10 @@ void Shadow::setupShaders()
         }
     )";
 
-    shader.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    shader.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    std::cout<<"Shadow:"<<std::endl;
+
+    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
+    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shader.link();
 }
 
@@ -93,7 +96,7 @@ void Shadow::render(const QMatrix4x4 &projection, float x, float y, float scale,
 {
     shader.bind();
     shader.setUniformValue("projection", projection);
-    shader.setUniformValue("shadowPosition", x, y);
+    shader.setUniformValue("shadowPosition", QVector2D(x, y));
     shader.setUniformValue("scale", scale);
     shader.setUniformValue("transparency", transparency);
 
@@ -101,7 +104,7 @@ void Shadow::render(const QMatrix4x4 &projection, float x, float y, float scale,
     glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
-    shader.release();
+    shader.unbind();
 }
 
 void Shadow::cleanup()
