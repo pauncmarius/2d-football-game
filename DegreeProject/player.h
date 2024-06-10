@@ -2,11 +2,13 @@
 #define PLAYER_H
 
 #include <QOpenGLFunctions_3_3_Core>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
+#include "shader.h"
+#include "texture.h"
 #include <QMatrix4x4>
 #include <vector>
 #include <map>
+#include <memory>
+
 
 enum PlayerState {
     Idle,
@@ -39,8 +41,8 @@ public:
 
 private:
     GLuint VAO, VBO, EBO;
-    QOpenGLShaderProgram shader;
-    std::map<PlayerState, std::vector<QOpenGLTexture*>> textures;
+    Shader shader;
+    std::map<PlayerState, std::vector<std::unique_ptr<Texture>>> textures;
     PlayerState currentState;
     float position[2];
     float widthScale, heightScale;

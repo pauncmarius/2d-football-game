@@ -16,16 +16,12 @@ Player::~Player()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    for (auto &textureList : textures) {
-        for (auto texture : textureList.second) {
-            delete texture;
-        }
-    }
 }
 
 void Player::init(const std::map<PlayerState, std::vector<QString>> &texturePaths)
 {
     initializeOpenGLFunctions();
+    shader.init();
     setupShaders();
     setupBuffers();
 
@@ -38,11 +34,10 @@ void Player::init(const std::map<PlayerState, std::vector<QString>> &texturePath
         const std::vector<QString> &paths = pair.second;
         numFrames[state] = paths.size();
         for (const auto& texturePath : paths) {
-            QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).convertToFormat(QImage::Format_RGBA8888));
-            texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-            texture->setMagnificationFilter(QOpenGLTexture::Linear);
-            texture->setWrapMode(QOpenGLTexture::Repeat);
-            textures[state].push_back(texture);
+            auto texture = std::make_unique<Texture>();
+            texture->initializeOpenGLFunctions();
+            texture->load(texturePath);
+            textures[state].push_back(std::move(texture));
         }
     }
 }
@@ -82,8 +77,10 @@ void Player::setupShaders()
         }
     )";
 
-    shader.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    shader.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    std::cout<<"Player:"<<std::endl;
+
+    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
+    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shader.link();
 }
 
@@ -158,7 +155,7 @@ void Player::render()
 {
     shader.bind();
     shader.setUniformValue("projection", projectionMatrix);
-    shader.setUniformValue("playerPosition", position[0], position[1]);
+    shader.setUniformValue("playerPosition", QVector2D(position[0], position[1]));
     shader.setUniformValue("widthScale", widthScale);
     shader.setUniformValue("heightScale", heightScale);
     textures[currentState][currentFrame]->bind();
@@ -167,8 +164,8 @@ void Player::render()
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-    textures[currentState][currentFrame]->release();
-    shader.release();
+    textures[currentState][currentFrame]->unbind();
+    shader.unbind();
 }
 
 void Player::setScale(float width, float height)
@@ -210,7 +207,7 @@ void Player::setTransparency(float alpha)
 {
     shader.bind();
     shader.setUniformValue("alpha", alpha);
-    shader.release();
+    shader.unbind();
 }
 
 QPointF Player::getPosition() const
