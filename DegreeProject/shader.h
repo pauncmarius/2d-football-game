@@ -10,7 +10,7 @@ public:
     ~Shader();
 
     void addShaderFromSourceCode(GLenum shaderType, const char *source);
-    void initialize();
+    void init();
     void link();
     void bind();
     void unbind();

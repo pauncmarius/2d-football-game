@@ -11,7 +11,7 @@ DebugRectangle::~DebugRectangle()
     glDeleteBuffers(1, &EBO);
 }
 
-void DebugRectangle::initialize()
+void DebugRectangle::init()
 {
     initializeOpenGLFunctions();
     setupShaders();

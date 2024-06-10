@@ -20,7 +20,7 @@ Ball::~Ball() {
     }
 }
 
-void Ball::initialize(const std::vector<QString> &texturePaths) {
+void Ball::init(const std::vector<QString> &texturePaths) {
     initializeOpenGLFunctions();
     setupShaders();
     setupBuffers();

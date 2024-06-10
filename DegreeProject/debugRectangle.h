@@ -13,7 +13,7 @@ public:
     DebugRectangle();
     ~DebugRectangle();
 
-    void initialize();
+    void init();
     void setRectangle(const QRectF &rect);
     void setColor(const QColor &color);
     void setProjectionMatrix(const QMatrix4x4 &projection);

@@ -8,13 +8,13 @@ BackgroundRenderer::~BackgroundRenderer() {
     glDeleteBuffers(1, &EBO);
 }
 
-void BackgroundRenderer::initialize(const QString &texturePath) {
+void BackgroundRenderer::init(const QString &texturePath) {
     initializeOpenGLFunctions();
 
     texture.initializeOpenGLFunctions();
     texture.load(texturePath);
 
-    shader.initialize();
+    shader.init();
     setupShaders();
     setupBuffers();
 }

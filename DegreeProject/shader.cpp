@@ -15,9 +15,9 @@ Shader::~Shader()
     }
 }
 
-void Shader::initialize()
+void Shader::init()
 {
-    // Initialize OpenGL functions here
+    // init OpenGL functions here
     initializeOpenGLFunctions();
     program = glCreateProgram();
     if (program == 0) {
@@ -27,32 +27,32 @@ void Shader::initialize()
 
 void Shader::addShaderFromSourceCode(GLenum shaderType, const char *source)
 {
-    // Check if the OpenGL context is initialized
+    // check if the OpenGL context is initd
     if (!program) {
-        qDebug() << "ERROR::SHADER_CREATION_ERROR\n OpenGL program not initialized.";
+        qDebug() << "ERROR::SHADER_CREATION_ERROR\n OpenGL program not initd.";
         return;
     }
 
-    // Create shader object
+    // create shader object
     GLuint shader = glCreateShader(shaderType);
     if (shader == 0) {
         qDebug() << "ERROR::SHADER_CREATION_ERROR\n Failed to create shader of type:" << (shaderType == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT");
         return;
     }
 
-    // Attach source code to shader object
+    // attach source code to shader object
     glShaderSource(shader, 1, &source, nullptr);
 
-    // Compile the shader
+    // compile the shader
     glCompileShader(shader);
 
-    // Check for compile errors
+    // check for compile errors
     checkCompileErrors(shader, shaderType == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT");
 
-    // Attach the compiled shader to the program
+    // attach the compiled shader to the program
     glAttachShader(program, shader);
 
-    // Assign the shader to the correct member variable
+    // assign the shader to the correct member variable
     if (shaderType == GL_VERTEX_SHADER) {
         vertexShader = shader;
     } else if (shaderType == GL_FRAGMENT_SHADER) {

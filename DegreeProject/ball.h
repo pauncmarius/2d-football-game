@@ -11,7 +11,7 @@ class Ball : protected QOpenGLFunctions_3_3_Core {
 public:
     Ball();
     ~Ball();
-    void initialize(const std::vector<QString> &texturePaths);
+    void init(const std::vector<QString> &texturePaths);
     void render();
     void setProjectionMatrix(const QMatrix4x4 &projection);
     void updatePhysics();

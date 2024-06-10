@@ -11,7 +11,7 @@ public:
     BackgroundRenderer();
     ~BackgroundRenderer();
 
-    void initialize(const QString &texturePath);
+    void init(const QString &texturePath);
     void render();
 
 private:

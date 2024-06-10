@@ -31,7 +31,7 @@ void Texture::load(const QString &path)
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        // Check for errors
+        // check errors
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
             qDebug() << "OpenGL error in Texture::load: " << err;

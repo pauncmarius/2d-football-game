@@ -22,7 +22,7 @@ class Player : protected QOpenGLFunctions_3_3_Core
 public:
     Player();
     ~Player();
-    void initialize(const std::map<PlayerState, std::vector<QString>> &texturePaths);
+    void init(const std::map<PlayerState, std::vector<QString>> &texturePaths);
     void render();
     void setProjectionMatrix(const QMatrix4x4 &projection);
     void updateAnimationFrame();

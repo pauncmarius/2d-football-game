@@ -10,7 +10,7 @@ class Shadow : protected QOpenGLFunctions_3_3_Core
 public:
     Shadow();
     ~Shadow();
-    void initialize();
+    void init();
     void render(const QMatrix4x4 &projection, float x, float y, float scale, float transparency);
     void cleanup();
 

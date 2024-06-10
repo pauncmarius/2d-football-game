@@ -7,7 +7,7 @@ Shadow::~Shadow()
     cleanup();
 }
 
-void Shadow::initialize()
+void Shadow::init()
 {
     initializeOpenGLFunctions();
     setupShaders();
