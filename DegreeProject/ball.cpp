@@ -6,9 +6,6 @@ Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCoun
     position[1] = 0.9f;
     velocity[0] = 0.0f;
     velocity[1] = 0.0f;
-    acceleration[0] = 0.0f;
-    // gravity
-    acceleration[1] = -12.0f;
 }
 
 Ball::~Ball() {
@@ -125,7 +122,7 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
 
 void Ball::updatePhysics() {
     if (state == Moving) {
-        velocity[1] += acceleration[1] * 0.016f;
+        velocity[1] += -12.0f * 0.016f;
         position[1] += velocity[1] * 0.016f;
 
         if (position[1] <= -0.28f) { // the ground level

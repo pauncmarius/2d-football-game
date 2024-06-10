@@ -223,8 +223,8 @@ void Player::setPosition(float x, float y)
 }
 
 QRectF Player::getBoundingBox() const {
-    float width = widthScale * 1.0f; // adjust based on the player's sprite size
-    float height = heightScale * 2.0f; // adjust based on the player's sprite size
+    float width = widthScale * 0.5f; // adjust based on the player's sprite size
+    float height = heightScale * 1.5f; // adjust based on the player's sprite size
     return QRectF(position[0] - width / 2, position[1] - height / 2, width, height);
 }
 

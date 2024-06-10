@@ -196,22 +196,22 @@ void GLWindow::updateAnimation()
         }
     }
 
-    // Update bounding boxes for collision detection
+    // update bounding boxes for collision detection
     QRectF playerBoundingBox = player.getBoundingBox();
     QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
+
     // collision detection between player and ball
     if (playerBoundingBox.intersects(ballBoundingBox)) {
         QPointF playerVelocity = (moveLeft ? QPointF(-0.02f, 0) : moveRight ? QPointF(0.02f, 0) : QPointF(0, 0));
-        ball.setVelocity(playerVelocity.x() * 50, ball.getVelocity().y()); // adjust the scaling factor as needed
-    }
-
-    // apply damping to simulate delay until the ball stops
-    if (ball.getState() == Moving && !moveLeft && !moveRight) {
-        QPointF ballVelocity = ball.getVelocity();
-        ball.setVelocity(ballVelocity.x() * ball.dampingFactor, ballVelocity.y());
-        if (std::abs(ballVelocity.x()) < 0.001f) {
-            ball.setVelocity(0, ballVelocity.y());
-            ball.state = Moving;
+        ball.setVelocity(playerVelocity.x() + 0.02f, ball.getVelocity().y()); // adjust the scaling factor as needed
+        // apply damping to simulate delay until the ball stops
+        if (ball.getState() == Moving && !playerBoundingBox.intersects(ballBoundingBox)) {
+            QPointF ballVelocity = ball.getVelocity();
+            ball.setVelocity(ballVelocity.x() * ball.dampingFactor, ballVelocity.y());
+            if (std::abs(ballVelocity.x()) < 0.001f) {
+                ball.setVelocity(0, ballVelocity.y());
+                ball.state = Stopped;
+            }
         }
     }
 
