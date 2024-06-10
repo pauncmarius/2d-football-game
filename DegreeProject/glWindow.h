@@ -38,6 +38,7 @@ private:
     bool moveRight;
     bool jump;
     bool kick;
+    bool isSpawningAnimationDone;
 
     DebugRectangle debugRectangle;
     QRectF goalZoneLeft;

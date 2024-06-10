@@ -26,12 +26,16 @@ public:
     void init(const std::vector<QString> &texturePaths);
     void render();
     void setProjectionMatrix(const QMatrix4x4 &projection);
-    void updatePhysics();
+    void updateSpawningAnimation();
     void updateAnimationFrame();
     QPointF getPosition() const;
     BallState getState() const;
     QPointF getVelocity() const;
     void setVelocity(float vx, float vy);
+    void updatePosition();
+    void setTransparency(float alpha);
+    void setPosition(float x, float y);
+
 
 private:
     GLuint VAO, VBO, EBO;

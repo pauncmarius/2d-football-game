@@ -56,10 +56,11 @@ void Ball::setupShaders() {
         out vec4 color;
 
         uniform sampler2D ballTexture;
+        uniform float alpha;
 
         void main() {
             vec4 texColor = texture(ballTexture, TexCoord);
-            color = texColor;
+            color = vec4(texColor.rgb, texColor.a * alpha);
         }
     )";
 
@@ -121,23 +122,23 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
     projectionMatrix = projection;
 }
 
-void Ball::updatePhysics() {
+void Ball::updateSpawningAnimation() {
     if (state == Moving) {
-        velocity[1] += -12.0f * 0.016f;
+        velocity[1] -= 0.192f;
         position[1] += velocity[1] * 0.016f;
 
         if (position[1] <= -0.28f) { // the ground level
             position[1] = -0.28f;
-            // reduce velocity
-            velocity[1] = -velocity[1] * dampingFactor;
+            velocity[1] *= -dampingFactor;
 
-            if (fabs(velocity[1]) < 0.01f) {
+            if (velocity[1] < 0.01f) {
                 velocity[1] = 0.0f;
                 state = Stopped;
             }
         }
     }
 }
+
 
 void Ball::updateAnimationFrame() {
     if (state == Moving) {
@@ -180,4 +181,31 @@ void Ball::setVelocity(float vx, float vy) {
     velocity[0] = vx;
     velocity[1] = vy;
     state = Moving;
+}
+
+void Ball::updatePosition() {
+    position[0] += velocity[0];
+
+    velocity[0] *= dampingFactor;
+
+    //std::cout<<velocity[0]<<std::endl;
+
+    if (fabs(velocity[0]) < 0.01f ) {
+        //std::cout<<"Ball will stop"<<std::endl;
+        velocity[0] = 0.0f;
+        state = Stopped;
+    }
+}
+
+void Ball::setTransparency(float alpha)
+{
+    shader.bind();
+    shader.setUniformValue("alpha", alpha);
+    shader.unbind();
+}
+
+void Ball::setPosition(float x, float y)
+{
+    position[0] = x;
+    position[1] = y;
 }

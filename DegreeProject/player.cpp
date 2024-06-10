@@ -69,11 +69,11 @@ void Player::setupShaders()
         out vec4 color;
 
         uniform sampler2D playerTexture;
-        uniform float alpha; // Add alpha uniform
+        uniform float alpha;
 
         void main() {
             vec4 texColor = texture(playerTexture, TexCoord);
-            color = vec4(texColor.rgb, texColor.a * alpha); // Apply alpha
+            color = vec4(texColor.rgb, texColor.a * alpha);
         }
     )";
 
@@ -222,7 +222,7 @@ void Player::setPosition(float x, float y)
 }
 
 QRectF Player::getBoundingBox() const {
-    float width = widthScale * 0.5f; // adjust based on the player's sprite size
+    float width = widthScale * 0.3f; // adjust based on the player's sprite size
     float height = heightScale * 1.5f; // adjust based on the player's sprite size
     return QRectF(position[0] - width / 2, position[1] - height / 2, width, height);
 }

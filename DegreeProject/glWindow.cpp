@@ -2,7 +2,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 
-GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false)
+GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false), isSpawningAnimationDone(false)
 {
     // window flags to prevent resizing
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
@@ -105,8 +105,8 @@ void GLWindow::initializeGL()
     player.init(playerTexturePaths);
     player.setScale(0.45f, 0.25f);
     // ex for debug rect
-    debugRectangle.init();
-    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+//    debugRectangle.init();
+//    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
 
     ballShadow.init();
     playerShadow.init();
@@ -122,7 +122,7 @@ void GLWindow::resizeGL(int w, int h)
 
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
-    debugRectangle.setProjectionMatrix(projection);
+//    debugRectangle.setProjectionMatrix(projection);
 }
 
 void GLWindow::paintGL()
@@ -131,10 +131,10 @@ void GLWindow::paintGL()
 
     backgroundRenderer.render();
 
-    // Update and render the debug rectangle
-    QRectF playerBoundingBox = player.getBoundingBox();
-    debugRectangle.setRectangle(playerBoundingBox);
-    debugRectangle.render();
+//    // Update and render the debug rectangle
+//    QRectF playerBoundingBox = player.getBoundingBox();
+//    debugRectangle.setRectangle(playerBoundingBox);
+//    debugRectangle.render();
 
     QMatrix4x4 projectionTemp;
     projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
@@ -161,11 +161,24 @@ void GLWindow::paintGL()
 
 void GLWindow::updateAnimation()
 {
-    ball.updatePhysics();
-    if (ball.getState() == Moving) {
-        ball.updateAnimationFrame();
+    // ball
+    if (!isSpawningAnimationDone) {
+        ball.updateSpawningAnimation();
+        if (ball.getState() == Moving) {
+            ball.updateAnimationFrame();
+        }
+        if (ball.getState() == Stopped) {
+            isSpawningAnimationDone = true;
+        }
+    } else {
+        ball.updatePosition();
+        if (ball.getState() == Moving) {
+            ball.updateAnimationFrame();
+        }
+        //
     }
 
+    // player
     if (kick) {
         player.kick();
         if (jump) {
@@ -201,24 +214,19 @@ void GLWindow::updateAnimation()
 
     // collision detection between player and ball
     if (playerBoundingBox.intersects(ballBoundingBox)) {
-        QPointF playerVelocity = (moveLeft ? QPointF(-0.02f, 0) : moveRight ? QPointF(0.02f, 0) : QPointF(0, 0));
-        ball.setVelocity(playerVelocity.x() + 0.02f, ball.getVelocity().y()); // adjust the scaling factor as needed
-        // apply damping to simulate delay until the ball stops
-        if (ball.getState() == Moving && !playerBoundingBox.intersects(ballBoundingBox)) {
-            QPointF ballVelocity = ball.getVelocity();
-            ball.setVelocity(ballVelocity.x() * ball.dampingFactor, ballVelocity.y());
-            if (std::abs(ballVelocity.x()) < 0.001f) {
-                ball.setVelocity(0, ballVelocity.y());
-                ball.state = Stopped;
-            }
-        }
+        QPointF playerVelocity = (moveLeft ? QPointF(-0.02f, 0) : moveRight ? QPointF(0.02f, 0) : QPointF(0.02, 0));
+        ball.setVelocity(playerVelocity.x(), ball.getVelocity().y()); // adjust the scaling factor as needed
     }
-
     // goal zone
     if (goalZoneLeft.contains(player.getPosition()) || goalZoneRight.contains(player.getPosition())) {
         player.setTransparency(0.8f);
     } else {
         player.setTransparency(1.0f);
+    }
+    if (goalZoneLeft.contains(ball.getPosition()) || goalZoneRight.contains(ball.getPosition())) {
+        ball.setTransparency(0.8f);
+    } else {
+        ball.setTransparency(1.0f);
     }
 
     // window's borders for players
@@ -227,6 +235,12 @@ void GLWindow::updateAnimation()
         player.setPosition(-1.7f, playerPos.y());
     } else if (playerPos.x() > 1.7f) {
         player.setPosition(1.7f, playerPos.y());
+    }
+    QPointF ballPos = ball.getPosition();
+    if (ballPos.x() < -1.7f) {
+        ball.setPosition(-1.7f, ballPos.y());
+    } else if (ballPos.x() > 1.7f) {
+        ball.setPosition(1.7f, ballPos.y());
     }
 
     player.updateAnimationFrame();
