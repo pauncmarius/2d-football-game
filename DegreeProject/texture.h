@@ -12,7 +12,7 @@ public:
 
     void load(const QString &path);
     void bind();
-    void release();
+    void unbind();
 
 private:
     GLuint textureId;

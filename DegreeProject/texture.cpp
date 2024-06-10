@@ -46,7 +46,7 @@ void Texture::bind()
     glBindTexture(GL_TEXTURE_2D, textureId);
 }
 
-void Texture::release()
+void Texture::unbind()
 {
     glBindTexture(GL_TEXTURE_2D, 0);
 }

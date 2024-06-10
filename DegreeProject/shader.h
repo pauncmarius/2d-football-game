@@ -13,7 +13,7 @@ public:
     void initialize();
     void link();
     void bind();
-    void release();
+    void unbind();
 
 private:
     GLuint program;

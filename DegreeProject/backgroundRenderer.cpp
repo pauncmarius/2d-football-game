@@ -21,7 +21,7 @@ void BackgroundRenderer::initialize(const QString &texturePath) {
 
 void BackgroundRenderer::setupBuffers() {
     GLfloat vertices[] = {
-        // Positions          // Texture Coords
+        // positions          // texture Coords
         -1.0f, -1.0f, 0.0f,   0.0f, 1.0f, // Bottom-left
          1.0f, -1.0f, 0.0f,   1.0f, 1.0f, // Bottom-right
          1.0f,  1.0f, 0.0f,   1.0f, 0.0f, // Top-right
@@ -89,9 +89,11 @@ void BackgroundRenderer::setupShaders() {
 void BackgroundRenderer::render() {
     shader.bind();
     texture.bind();
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-    texture.release();
-    shader.release();
+
+    texture.unbind();
+    shader.unbind();
 }

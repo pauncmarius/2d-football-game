@@ -5,10 +5,10 @@
 
 GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false)
 {
-    // Set window flags to prevent resizing
+    // window flags to prevent resizing
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
 
-    // Create a timer to update the animation and physics
+    // timer to update the animation and physics
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &GLWindow::updateAnimation);
     timer->start(16); // Approximately 60 FPS
@@ -18,16 +18,14 @@ GLWindow::~GLWindow(){}
 
 void GLWindow::initializeGL()
 {
-    initializeOpenGLFunctions();  // Initialize OpenGL functions
+    // initialize OpenGL functions
+    initializeOpenGLFunctions();
 
-    // Initialize the background renderer
     backgroundRenderer.initialize("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
     goalZoneLeft = QRectF(-1.8f, -0.4f, 0.3f, 0.7f);
     goalZoneRight = QRectF(1.455f, -0.4f, 0.3f, 0.7f);
 
-
-    // Initialize the ball with texture paths for the animation frames
     std::vector<QString> ballTexturePaths = {
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png",
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball2.png",
@@ -36,7 +34,6 @@ void GLWindow::initializeGL()
     };
     ball.initialize(ballTexturePaths);
 
-    // Initialize the player with texture paths for the idle, move left, move right, jump up, fall down, and kick animations
     std::map<PlayerState, std::vector<QString>> playerTexturePaths = {
         {Idle, {
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_000.png",
@@ -107,7 +104,6 @@ void GLWindow::initializeGL()
     };
 
     player.initialize(playerTexturePaths);
-    // Set the scale for the player
     player.setScale(0.45f, 0.25f);
 
     // Set the initial projection matrix
@@ -166,7 +162,7 @@ void GLWindow::paintGL()
     // Render the ball shadow
     QPointF ballPosition = ball.getPosition();
     // Scale the shadow based on height
-    float ballShadowScale = 0.065f + (ballPosition.y() * 0.05f);
+    float ballShadowScale = 0.060f + (ballPosition.y() * 0.05f);
     // Transparency based on height
     float ballShadowTransparency = 0.2f - ballPosition.y();
     ballShadow.render(projectionTemp, ballPosition.x(), -1.1f, ballShadowScale, ballShadowTransparency);

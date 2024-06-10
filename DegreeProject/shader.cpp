@@ -82,7 +82,7 @@ void Shader::bind()
     glUseProgram(program);
 }
 
-void Shader::release()
+void Shader::unbind()
 {
     glUseProgram(0);
 }
