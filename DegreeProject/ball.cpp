@@ -1,5 +1,6 @@
 #include "ball.h"
 #include <cmath>
+#include <memory>
 
 Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), dampingFactor(0.7f), state(Moving) {
     position[0] = 0.0f;
@@ -12,23 +13,21 @@ Ball::~Ball() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    for (auto texture : textures) {
-        delete texture;
-    }
 }
 
 void Ball::init(const std::vector<QString> &texturePaths) {
     initializeOpenGLFunctions();
+
+    shader.init();
     setupShaders();
     setupBuffers();
 
     numFrames = texturePaths.size();
     for (const auto& texturePath : texturePaths) {
-        QOpenGLTexture *texture = new QOpenGLTexture(QImage(texturePath).mirrored());
-        texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-        texture->setMagnificationFilter(QOpenGLTexture::Linear);
-        texture->setWrapMode(QOpenGLTexture::Repeat);
-        textures.push_back(texture);
+        auto texture = std::make_unique<Texture>();
+        texture->initializeOpenGLFunctions();
+        texture->load(texturePath);
+        textures.push_back(std::move(texture));
     }
 }
 
@@ -63,8 +62,8 @@ void Ball::setupShaders() {
         }
     )";
 
-    shader.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    shader.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
+    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shader.link();
 }
 
@@ -152,15 +151,15 @@ void Ball::updateAnimationFrame() {
 void Ball::render() {
     shader.bind();
     shader.setUniformValue("projection", projectionMatrix);
-    shader.setUniformValue("ballPosition", position[0], position[1]);
+    shader.setUniformValue("ballPosition", QVector2D(position[0], position[1]));
     shader.setUniformValue("ballRadius", radius);
     textures[currentFrame]->bind();
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, 0); // numSegments * 3
     glBindVertexArray(0);
-    textures[currentFrame]->release();
-    shader.release();
+    textures[currentFrame]->unbind();
+    shader.unbind();
 }
 
 QPointF Ball::getPosition() const {

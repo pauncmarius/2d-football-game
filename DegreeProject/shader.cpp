@@ -1,12 +1,7 @@
 #include "shader.h"
 #include <QDebug>
 
-Shader::Shader()
-{
-    program = 0;
-    vertexShader = 0;
-    fragmentShader = 0;
-}
+Shader::Shader() : program(0), vertexShader(0), fragmentShader(0){}
 
 Shader::~Shader()
 {
@@ -19,6 +14,7 @@ void Shader::init()
 {
     // init OpenGL functions here
     initializeOpenGLFunctions();
+
     program = glCreateProgram();
     if (program == 0) {
         qDebug() << "ERROR::PROGRAM_CREATION_ERROR\n Failed to create shader program.";
@@ -111,4 +107,30 @@ void Shader::checkLinkErrors(GLuint program)
     } else {
         qDebug() << "SUCCESS::PROGRAM_LINKING_SUCCESS";
     }
+}
+
+
+void Shader::setUniformValue(const char *name, int value) {
+    glUniform1i(glGetUniformLocation(program, name), value);
+}
+
+void Shader::setUniformValue(const char *name, float value) {
+    glUniform1f(glGetUniformLocation(program, name), value);
+}
+
+
+void Shader::setUniformValue(const char *name, const QVector2D &value) {
+    glUniform2fv(glGetUniformLocation(program, name), 1, reinterpret_cast<const GLfloat*>(&value));
+}
+
+void Shader::setUniformValue(const char *name, const QVector3D &value) {
+    glUniform3fv(glGetUniformLocation(program, name), 1, reinterpret_cast<const GLfloat*>(&value));
+}
+
+void Shader::setUniformValue(const char *name, const QVector4D &value) {
+    glUniform4fv(glGetUniformLocation(program, name), 1, reinterpret_cast<const GLfloat*>(&value));
+}
+
+void Shader::setUniformValue(const char *name, const QMatrix4x4 &value) {
+    glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, value.constData());
 }

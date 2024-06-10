@@ -2,8 +2,8 @@
 #define BALL_H
 
 #include <QOpenGLFunctions_3_3_Core>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
+#include "shader.h"
+#include "texture.h"
 #include <QMatrix4x4>
 #include <vector>
 
@@ -35,8 +35,8 @@ public:
 
 private:
     GLuint VAO, VBO, EBO;
-    QOpenGLShaderProgram shader;
-    std::vector<QOpenGLTexture*> textures;
+    Shader shader;
+    std::vector<std::unique_ptr<Texture>> textures;
 
     QMatrix4x4 projectionMatrix;
 
