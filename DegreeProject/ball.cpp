@@ -1,6 +1,7 @@
 #include "ball.h"
 #include <cmath>
 #include <memory>
+#include <iostream>
 
 Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), dampingFactor(0.7f), state(Moving) {
     position[0] = 0.0f;
@@ -62,6 +63,7 @@ void Ball::setupShaders() {
         }
     )";
 
+    std::cout<<"Ball:"<<std::endl;
     shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
     shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shader.link();

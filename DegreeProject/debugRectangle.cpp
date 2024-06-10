@@ -1,4 +1,5 @@
 #include "debugRectangle.h"
+#include <iostream>
 
 DebugRectangle::DebugRectangle() : VAO(0), VBO(0), EBO(0), color(Qt::red)
 {
@@ -14,6 +15,7 @@ DebugRectangle::~DebugRectangle()
 void DebugRectangle::init()
 {
     initializeOpenGLFunctions();
+    shader.init();
     setupShaders();
     setupBuffers();
 }
@@ -81,9 +83,9 @@ void DebugRectangle::setupShaders()
             color = debugColor;
         }
     )";
-
-    shader.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    shader.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    std::cout<<"DebugRectangle:"<<std::endl;
+    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
+    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shader.link();
 }
 
@@ -104,5 +106,5 @@ void DebugRectangle::render()
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
-    shader.release();
+    shader.unbind();
 }

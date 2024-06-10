@@ -2,7 +2,7 @@
 #define DEBUGRECTANGLE_H
 
 #include <QOpenGLFunctions_3_3_Core>
-#include <QOpenGLShaderProgram>
+#include "shader.h"
 #include <QColor>
 #include <QRectF>
 #include <QMatrix4x4>
@@ -21,7 +21,7 @@ public:
 
 private:
     GLuint VAO, VBO, EBO;
-    QOpenGLShaderProgram shader;
+    Shader shader;
     QMatrix4x4 projectionMatrix;
     QColor color;
     QRectF rectangle;

@@ -2,6 +2,8 @@
 #include <cmath>
 #include <QImage>
 #include <QDebug>
+#include <iostream>
+
 
 Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0), currentState(Idle), velocityY(0.0f), isJumping(false)
 {

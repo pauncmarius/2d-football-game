@@ -1,4 +1,5 @@
 #include "backgroundRenderer.h"
+#include <iostream>
 
 BackgroundRenderer::BackgroundRenderer() : VAO(0), VBO(0), EBO(0) {}
 
@@ -80,6 +81,8 @@ void BackgroundRenderer::setupShaders() {
             color = texture(ourTexture, TexCoord);
         }
     )";
+
+    std::cout<<"BgRenderer:"<<std::endl;
 
     shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
     shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);

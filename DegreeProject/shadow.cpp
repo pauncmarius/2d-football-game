@@ -1,4 +1,6 @@
 #include "shadow.h"
+#include <iostream>
+
 
 Shadow::Shadow() : VAO(0), VBO(0), EBO(0) {}
 
