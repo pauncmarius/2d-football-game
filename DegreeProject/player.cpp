@@ -5,8 +5,8 @@
 
 Player::Player() : VAO(0), VBO(0), EBO(0), widthScale(1.0f), heightScale(1.0f), currentFrame(0), frameCounter(0), currentState(Idle), velocityY(0.0f), isJumping(false)
 {
-    position[0] = -1.4f; //Ox
-    position[1] = -0.17f; //Oy
+    position[0] = -1.4f; // Ox
+    position[1] = -0.17f; // Oy
 }
 
 Player::~Player()
@@ -89,7 +89,7 @@ void Player::setupBuffers()
 {
 
     GLfloat vertices[] = {
-        // Positions   // Texture Coords
+        // positions   // texture Coords
         -0.5f, -1.0f,  0.0f, 1.0f, // Bottom-left
          0.5f, -1.0f,  1.0f, 1.0f, // Bottom-right
          0.5f,  1.0f,  1.0f, 0.0f, // Top-right

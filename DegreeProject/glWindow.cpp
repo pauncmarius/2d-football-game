@@ -130,7 +130,7 @@ void GLWindow::resizeGL(int w, int h)
 
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
-    debugRectangle.setProjectionMatrix(projection);
+    //debugRectangle.setProjectionMatrix(projection);
 }
 
 void GLWindow::paintGL()
@@ -168,7 +168,7 @@ void GLWindow::paintGL()
 void GLWindow::updateAnimation()
 {
     ball.updatePhysics();
-    if (ball.isJumping()) {
+    if (ball.getState() == Moving) {
         ball.updateAnimationFrame();
     }
 

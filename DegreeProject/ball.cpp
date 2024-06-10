@@ -1,7 +1,7 @@
 #include "ball.h"
 #include <cmath>
 
-Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), jumping(true), dampingFactor(0.7f) {
+Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), dampingFactor(0.7f), state(Moving) {
     position[0] = 0.0f;
     position[1] = 0.9f;
     velocity[0] = 0.0f;
@@ -124,7 +124,7 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
 }
 
 void Ball::updatePhysics() {
-    if (jumping) {
+    if (state == Moving) {
         velocity[1] += acceleration[1] * 0.016f;
         position[1] += velocity[1] * 0.016f;
 
@@ -135,18 +135,14 @@ void Ball::updatePhysics() {
 
             if (fabs(velocity[1]) < 0.01f) {
                 velocity[1] = 0.0f;
-                jumping = false;
+                state = Stopped;
             }
         }
     }
 }
 
-bool Ball::isJumping() const {
-    return jumping;
-}
-
 void Ball::updateAnimationFrame() {
-    if (jumping) {
+    if (state == Moving) {
         frameCounter++;
         // adjust the number of frames to control the speed
         if (frameCounter >= 10) {
@@ -172,4 +168,8 @@ void Ball::render() {
 
 QPointF Ball::getPosition() const {
     return QPointF(position[0], position[1]);
+}
+
+BallState Ball::getState() const {
+    return state;
 }
