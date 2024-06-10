@@ -42,6 +42,8 @@ private:
     DebugRectangle debugRectangle;
     QRectF goalZoneLeft;
     QRectF goalZoneRight;
+    QRectF playerBoundingBox;
+    QRectF ballBoundingBox;
 
     QMatrix4x4 projection;
 

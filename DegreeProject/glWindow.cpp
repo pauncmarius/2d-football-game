@@ -105,16 +105,9 @@ void GLWindow::initializeGL()
 
     player.init(playerTexturePaths);
     player.setScale(0.45f, 0.25f);
-
-    // init and configure the debug rectangle
-//    debugRectangle.init();
-//    debugRectangle.setRectangle(goalZoneLeft);
-//    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
-//    debugRectangle.setProjectionMatrix(projection);
-
-//    debugRectangle.setRectangle(goalZoneRight);
-//    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
-//    debugRectangle.setProjectionMatrix(projection);
+    // ex for debug rect
+    debugRectangle.init();
+    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
 
     ballShadow.init();
     playerShadow.init();
@@ -130,7 +123,7 @@ void GLWindow::resizeGL(int w, int h)
 
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
-    //debugRectangle.setProjectionMatrix(projection);
+    debugRectangle.setProjectionMatrix(projection);
 }
 
 void GLWindow::paintGL()
@@ -139,8 +132,10 @@ void GLWindow::paintGL()
 
     backgroundRenderer.render();
 
-    // draw the debug rectangle for the goal zone
-    //debugRectangle.render();
+    // Update and render the debug rectangle
+    QRectF playerBoundingBox = player.getBoundingBox();
+    debugRectangle.setRectangle(playerBoundingBox);
+    debugRectangle.render();
 
     QMatrix4x4 projectionTemp;
     projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
@@ -198,6 +193,25 @@ void GLWindow::updateAnimation()
             player.move(0.02f);
         } else {
             player.setState(Idle);
+        }
+    }
+
+    // Update bounding boxes for collision detection
+    QRectF playerBoundingBox = player.getBoundingBox();
+    QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
+    // collision detection between player and ball
+    if (playerBoundingBox.intersects(ballBoundingBox)) {
+        QPointF playerVelocity = (moveLeft ? QPointF(-0.02f, 0) : moveRight ? QPointF(0.02f, 0) : QPointF(0, 0));
+        ball.setVelocity(playerVelocity.x() * 50, ball.getVelocity().y()); // adjust the scaling factor as needed
+    }
+
+    // apply damping to simulate delay until the ball stops
+    if (ball.getState() == Moving && !moveLeft && !moveRight) {
+        QPointF ballVelocity = ball.getVelocity();
+        ball.setVelocity(ballVelocity.x() * ball.dampingFactor, ballVelocity.y());
+        if (std::abs(ballVelocity.x()) < 0.001f) {
+            ball.setVelocity(0, ballVelocity.y());
+            ball.state = Moving;
         }
     }
 

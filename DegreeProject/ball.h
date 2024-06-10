@@ -14,6 +14,14 @@ enum BallState {
 
 class Ball : protected QOpenGLFunctions_3_3_Core {
 public:
+    float dampingFactor;
+    float position[2];
+    float velocity[2];
+    float acceleration[2];
+    float radius;
+
+    BallState state;
+
     Ball();
     ~Ball();
     void init(const std::vector<QString> &texturePaths);
@@ -23,25 +31,19 @@ public:
     void updateAnimationFrame();
     QPointF getPosition() const;
     BallState getState() const;
+    QPointF getVelocity() const;
+    void setVelocity(float vx, float vy);
 
 private:
     GLuint VAO, VBO, EBO;
     QOpenGLShaderProgram shader;
     std::vector<QOpenGLTexture*> textures;
 
-    float position[2];
-    float velocity[2];
-    float acceleration[2];
-    float radius;
-    float dampingFactor;
-
     QMatrix4x4 projectionMatrix;
 
     int currentFrame;
     int numFrames;
     int frameCounter;
-
-    BallState state;
 
     void setupShaders();
     void setupBuffers();

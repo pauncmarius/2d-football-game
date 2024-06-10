@@ -173,3 +173,13 @@ QPointF Ball::getPosition() const {
 BallState Ball::getState() const {
     return state;
 }
+
+QPointF Ball::getVelocity() const {
+    return QPointF(velocity[0], velocity[1]);
+}
+
+void Ball::setVelocity(float vx, float vy) {
+    velocity[0] = vx;
+    velocity[1] = vy;
+    state = Moving;
+}

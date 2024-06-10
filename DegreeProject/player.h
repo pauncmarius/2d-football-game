@@ -34,6 +34,7 @@ public:
     QPointF getPosition() const;
     void setTransparency(float alpha);
     void setPosition(float x, float y);
+    QRectF getBoundingBox() const;
 
 
 private:
