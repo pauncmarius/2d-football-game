@@ -9,6 +9,7 @@
 #include "debugRectangle.h"
 #include "shadow.h"
 
+// Clasa GLWindow derivată din QOpenGLWidget și QOpenGLFunctions_3_3_Core pentru a crea și gestiona fereastra OpenGL
 class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
     Q_OBJECT
@@ -18,35 +19,35 @@ public:
     ~GLWindow();
 
 protected:
-    void initializeGL() override;
-    void resizeGL(int w, int h) override;
-    void paintGL() override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
+    void initializeGL() override; // Inițializează contextul OpenGL
+    void resizeGL(int w, int h) override; // Reconfigurează viewport-ul când fereastra este redimensionată
+    void paintGL() override; // Desenează scena
+    void keyPressEvent(QKeyEvent *event) override; // Gestionează evenimentele de tastatură
+    void keyReleaseEvent(QKeyEvent *event) override; // Gestionează eliberarea tastelor
 
 private slots:
-    void updateAnimation();
+    void updateAnimation(); // Actualizează animația și fizica
 
 private:
-    BackgroundRenderer backgroundRenderer;
-    Ball ball;
-    Player player;
-    Shadow ballShadow;
-    Shadow playerShadow;
+    BackgroundRenderer backgroundRenderer; // Renderer pentru fundal
+    Ball ball; // Obiectul mingii
+    Player player; // Obiectul jucătorului
+    Shadow ballShadow; // Umbră pentru minge
+    Shadow playerShadow; // Umbră pentru jucător
 
-    bool moveLeft;
-    bool moveRight;
-    bool jump;
-    bool kick;
-    bool isSpawningAnimationDone;
+    bool moveLeft; // Bool pentru mișcarea la stânga
+    bool moveRight; // Bool pentru mișcarea la dreapta
+    bool jump; // Bool pentru săritură
+    bool kick; // Bool pentru lovitură
+    bool isSpawningAnimationDone; // Flag pentru finalizarea animației de spawn
 
-    DebugRectangle debugRectangle;
-    QRectF goalZoneLeft;
-    QRectF goalZoneRight;
-    QRectF playerBoundingBox;
-    QRectF ballBoundingBox;
+    DebugRectangle debugRectangle; // Dreptunghi de debug
+    QRectF goalZoneLeft; // Zona de gol stânga
+    QRectF goalZoneRight; // Zona de gol dreapta
+    QRectF playerBoundingBox; // Bounding box pentru jucător
+    QRectF ballBoundingBox; // Bounding box pentru minge
 
-    QMatrix4x4 projection;
+    QMatrix4x4 projection; // Matricea de proiecție
 
 };
 

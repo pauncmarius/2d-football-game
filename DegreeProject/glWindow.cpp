@@ -4,10 +4,10 @@
 
 GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false), isSpawningAnimationDone(false)
 {
-    // window flags to prevent resizing
+    // Setează flag-urile ferestrei pentru a preveni redimensionarea
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
 
-    // timer to update the animation and physics
+    // Timer pentru actualizarea animației și fizicii
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &GLWindow::updateAnimation);
     timer->start(16); // Approximately 60 FPS
@@ -17,14 +17,17 @@ GLWindow::~GLWindow(){}
 
 void GLWindow::initializeGL()
 {
-    // init OpenGL functions
+    // Inițializează funcțiile OpenGL
     initializeOpenGLFunctions();
 
+    // Inițializează renderer-ul de fundal
     backgroundRenderer.init("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
+    // Setează zonele de gol
     goalZoneLeft = QRectF(-1.8f, -0.4f, 0.3f, 0.7f);
     goalZoneRight = QRectF(1.455f, -0.4f, 0.3f, 0.7f);
 
+    // Inițializează texturile pentru minge
     std::vector<QString> ballTexturePaths = {
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball1.png",
         "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/ball2.png",
@@ -33,6 +36,7 @@ void GLWindow::initializeGL()
     };
     ball.init(ballTexturePaths);
 
+    // Inițializează texturile pentru jucător
     std::map<PlayerState, std::vector<QString>> playerTexturePaths = {
         {Idle, {
             "C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/characterBrazil/Idle/Idle_000.png",
@@ -116,7 +120,7 @@ void GLWindow::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);
 
-    // adjust the projection matrix to maintain the aspect ratio
+    // Ajustează matricea de proiecție pentru a obține raportul de aspect dorit
     float aspect = float(w) / float(h);
     projection.ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
 
@@ -129,6 +133,7 @@ void GLWindow::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // Desenează fundalul
     backgroundRenderer.render();
 
 //    // Update and render the debug rectangle
@@ -140,22 +145,25 @@ void GLWindow::paintGL()
     projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
 
     QMatrix4x4 scalingMatrix;
-    scalingMatrix.scale(1.0f, 0.3f); // adjust the y-scale factor to squash the circle
+    // Ajustează factorul de scalare pe axa y pentru a aplatiza cercul
+    scalingMatrix.scale(1.0f, 0.3f);
     projectionTemp = projectionTemp * scalingMatrix;
 
-    // render the ball shadow
+    // Desenează umbra mingii
     QPointF ballPosition = ball.getPosition();
     float ballShadowScale = 0.060f + (ballPosition.y() * 0.05f);
     float ballShadowTransparency = 0.2f - ballPosition.y();
     ballShadow.render(projectionTemp, ballPosition.x(), -1.1f, ballShadowScale, ballShadowTransparency);
 
-    // render the player shadow
+    // Desenează umbra jucătorului
     QPointF playerPosition = player.getPosition();
     float playerShadowScale = 0.035f + (0.05f - playerPosition.y() * 0.05f);
     float playerShadowTransparency = 0.2f - playerPosition.y();
     playerShadow.render(projectionTemp, playerPosition.x(), -1.1f, playerShadowScale, playerShadowTransparency);
 
+    // Desenează mingea
     ball.render();
+    // Desenează jucătorul
     player.render();
 }
 
@@ -208,16 +216,17 @@ void GLWindow::updateAnimation()
         }
     }
 
-    // create bounding boxes for collision detection
+    // Creează bounding box-uri pentru detectarea coliziunilor
     QRectF playerBoundingBox = player.getBoundingBox();
     QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
 
-    // collision detection between player and ball
+    // Detectarea coliziunilor între jucător și minge
     if (playerBoundingBox.intersects(ballBoundingBox)) {
         QPointF playerVelocity = (moveLeft ? QPointF(-0.02f, 0) : moveRight ? QPointF(0.02f, 0) : QPointF(0.02, 0));
         ball.setVelocity(playerVelocity.x(), ball.getVelocity().y()); // adjust the scaling factor as needed
     }
-    // goal zone
+
+    // Zona de poarta
     if (goalZoneLeft.contains(player.getPosition()) || goalZoneRight.contains(player.getPosition())) {
         player.setTransparency(0.8f);
     } else {
@@ -229,7 +238,7 @@ void GLWindow::updateAnimation()
         ball.setTransparency(1.0f);
     }
 
-    // window's borders for players
+    // Limitele ferestrei pentru jucători
     QPointF playerPos = player.getPosition();
     if (playerPos.x() < -1.7f) {
         player.setPosition(-1.7f, playerPos.y());
@@ -245,7 +254,7 @@ void GLWindow::updateAnimation()
 
     player.updateAnimationFrame();
 
-    // request repaint
+    // Solicită redesenarea
     update();
 }
 
