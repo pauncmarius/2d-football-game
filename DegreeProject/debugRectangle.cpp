@@ -24,6 +24,7 @@ void DebugRectangle::setRectangle(const QRectF &rect)
 {
     rectangle = rect;
 
+    // Coordonatele vârfurilor dreptunghiului
     GLfloat vertices[] = {
         rect.left(),  rect.top(),    // Top-left
         rect.right(), rect.top(),    // Top-right
@@ -31,6 +32,7 @@ void DebugRectangle::setRectangle(const QRectF &rect)
         rect.left(),  rect.bottom()  // Bottom-left
     };
 
+    // Indicii pentru desenarea triunghiurilor
     GLuint indices[] = {
         0, 1, 2,
         2, 3, 0

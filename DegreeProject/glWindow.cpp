@@ -208,7 +208,7 @@ void GLWindow::updateAnimation()
         }
     }
 
-    // update bounding boxes for collision detection
+    // create bounding boxes for collision detection
     QRectF playerBoundingBox = player.getBoundingBox();
     QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
 

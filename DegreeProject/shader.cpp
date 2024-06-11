@@ -12,9 +12,10 @@ Shader::~Shader()
 
 void Shader::init()
 {
-    // init OpenGL functions here
+    // Inițializează funcțiile OpenGL
     initializeOpenGLFunctions();
 
+    // Creează un program OpenGL
     program = glCreateProgram();
     if (program == 0) {
         qDebug() << "ERROR::PROGRAM_CREATION_ERROR\n Failed to create shader program.";
@@ -23,32 +24,32 @@ void Shader::init()
 
 void Shader::addShaderFromSourceCode(GLenum shaderType, const char *source)
 {
-    // check if the OpenGL context is initd
+    // Verifică dacă programul OpenGL este inițializat
     if (!program) {
         qDebug() << "ERROR::SHADER_CREATION_ERROR\n OpenGL program not initd.";
         return;
     }
 
-    // create shader object
+    // Creează un obiect shader
     GLuint shader = glCreateShader(shaderType);
     if (shader == 0) {
         qDebug() << "ERROR::SHADER_CREATION_ERROR\n Failed to create shader of type:" << (shaderType == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT");
         return;
     }
 
-    // attach source code to shader object
+    // Atașează codul sursă la obiectul shader
     glShaderSource(shader, 1, &source, nullptr);
 
-    // compile the shader
+    // Compilează shader-ul
     glCompileShader(shader);
 
-    // check for compile errors
+    // Verifică erorile de compilare
     checkCompileErrors(shader, shaderType == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT");
 
-    // attach the compiled shader to the program
+    // Atașează shader-ul compilat la program
     glAttachShader(program, shader);
 
-    // assign the shader to the correct member variable
+     // Asignează shader-ul la variabila corespunzătoare
     if (shaderType == GL_VERTEX_SHADER) {
         vertexShader = shader;
     } else if (shaderType == GL_FRAGMENT_SHADER) {
@@ -56,13 +57,13 @@ void Shader::addShaderFromSourceCode(GLenum shaderType, const char *source)
     }
 }
 
-
 void Shader::link()
 {
-
+    // Atribuie programul shader
     glLinkProgram(program);
     checkLinkErrors(program);
 
+    // Șterge shaderele după ce au fost legate
     if (vertexShader != 0) {
         glDeleteShader(vertexShader);
         vertexShader = 0;
@@ -109,28 +110,32 @@ void Shader::checkLinkErrors(GLuint program)
     }
 }
 
-
+// Setează valorile uniform pentru tipul int
 void Shader::setUniformValue(const char *name, int value) {
     glUniform1i(glGetUniformLocation(program, name), value);
 }
 
+// Setează valorile uniform pentru tipul float
 void Shader::setUniformValue(const char *name, float value) {
     glUniform1f(glGetUniformLocation(program, name), value);
 }
 
-
+// Setează valorile uniform pentru tipul QVector2D
 void Shader::setUniformValue(const char *name, const QVector2D &value) {
     glUniform2fv(glGetUniformLocation(program, name), 1, reinterpret_cast<const GLfloat*>(&value));
 }
 
+// Setează valorile uniform pentru tipul QVector3D
 void Shader::setUniformValue(const char *name, const QVector3D &value) {
     glUniform3fv(glGetUniformLocation(program, name), 1, reinterpret_cast<const GLfloat*>(&value));
 }
 
+// Setează valorile uniform pentru tipul QVector4D
 void Shader::setUniformValue(const char *name, const QVector4D &value) {
     glUniform4fv(glGetUniformLocation(program, name), 1, reinterpret_cast<const GLfloat*>(&value));
 }
 
+// Setează valorile uniform pentru tipul QMatrix4x4
 void Shader::setUniformValue(const char *name, const QMatrix4x4 &value) {
     glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, value.constData());
 }

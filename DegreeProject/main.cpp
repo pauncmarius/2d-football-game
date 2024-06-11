@@ -1,5 +1,4 @@
 #include <QApplication>
-#include <QSurfaceFormat>
 
 #include "glWindow.h"
 

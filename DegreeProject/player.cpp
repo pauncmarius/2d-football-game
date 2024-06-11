@@ -25,7 +25,7 @@ void Player::init(const std::map<PlayerState, std::vector<QString>> &texturePath
     setupShaders();
     setupBuffers();
 
-    // enable blending to remove black bg
+    // Activează blending-ul pentru a elimina fundalul transparent al imaginilor
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -79,9 +79,9 @@ void Player::setupShaders()
 
     std::cout<<"Player:"<<std::endl;
 
-    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource);
-    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    shader.link();
+    shader.addShaderFromSourceCode(GL_VERTEX_SHADER, vertexShaderSource); // Adaugă și compilează shader-ul vertex
+    shader.addShaderFromSourceCode(GL_FRAGMENT_SHADER, fragmentShaderSource); // Adaugă și compilează shader-ul fragment
+    shader.link(); // Leagă shader-ele la programul shader
 }
 
 void Player::setupBuffers()
@@ -95,28 +95,40 @@ void Player::setupBuffers()
         -0.5f,  1.0f,  0.0f, 0.0f  // Top-left
     };
 
+    // Indicii pentru desenarea triunghiurilor
     GLuint indices[] = {
         0, 1, 2,
         2, 3, 0
     };
 
+    // Generează un VAO
     glGenVertexArrays(1, &VAO);
+    // Generează un VBO
     glGenBuffers(1, &VBO);
+    // Generează un EBO
     glGenBuffers(1, &EBO);
 
+    // Leagă VAO-ul
     glBindVertexArray(VAO);
-
+    // Leagă VBO-ul
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // Încarcă datele vârfurilor în VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+    // Leagă EBO-ul
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // Încarcă indicii în EBO
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+    // Specifică formatul vârfurilor
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    // Activează atributul pentru primul vârf
     glEnableVertexAttribArray(0);
+    // Specifică formatul vârfurilor
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+    //Activează atributul pentru pal doliea vârf
     glEnableVertexAttribArray(1);
 
+    // Dezleagă VAO-ul
     glBindVertexArray(0);
 }
 
@@ -128,21 +140,21 @@ void Player::setProjectionMatrix(const QMatrix4x4 &projection)
 void Player::updateAnimationFrame()
 {
     frameCounter++;
-    // adjust the number of frames to control the speed
+    // Ajustează numărul de cadre pentru a controla viteza animatiei
     if (frameCounter >= 5) {
         frameCounter = 0;
         currentFrame = (currentFrame + 1) % numFrames[currentState];
     }
 
-    // update jumping logic
+    // Actualizează logica săriturii
     if (isJumping) {
         position[1] += velocityY;
-        velocityY -= 0.005f; // gravity effect
+        velocityY -= 0.005f; // efectul gravitației
 
         if (velocityY < 0.0f && currentState != Kick) {
             setState(FallDown);
         }
-        if (position[1] <= -0.17f) { // ground level
+        if (position[1] <= -0.17f) { // nivelul solului
             position[1] = -0.17f;
             isJumping = false;
             velocityY = 0.0f;
@@ -154,14 +166,15 @@ void Player::updateAnimationFrame()
 void Player::render()
 {
     shader.bind();
+
     shader.setUniformValue("projection", projectionMatrix);
     shader.setUniformValue("playerPosition", QVector2D(position[0], position[1]));
     shader.setUniformValue("widthScale", widthScale);
     shader.setUniformValue("heightScale", heightScale);
     textures[currentState][currentFrame]->bind();
     shader.setUniformValue("playerTexture", 0);
-    glBindVertexArray(VAO);
 
+    glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     textures[currentState][currentFrame]->unbind();
@@ -178,7 +191,7 @@ void Player::setState(PlayerState state)
 {
     if (currentState != state) {
         currentState = state;
-        // reset frame to the start of the new animation
+        // Resetează cadrul la începutul noii animații
         currentFrame = 0;
     }
 }
@@ -192,7 +205,7 @@ void Player::jump()
 {
     if (!isJumping) {
         isJumping = true;
-        // Initial jump velocity
+        // Viteza inițială de săritură
         velocityY = 0.055f;
         setState(JumpUp);
     }
@@ -222,8 +235,8 @@ void Player::setPosition(float x, float y)
 }
 
 QRectF Player::getBoundingBox() const {
-    float width = widthScale * 0.3f; // adjust based on the player's sprite size
-    float height = heightScale * 1.5f; // adjust based on the player's sprite size
+    float width = widthScale * 0.3f; // Ajustează în funcție de dimensiunea sprite-ului jucătorului
+    float height = heightScale * 1.5f; // Ajustează în funcție de dimensiunea sprite-ului jucătorului
     return QRectF(position[0] - width / 2, position[1] - height / 2, width, height);
 }
 

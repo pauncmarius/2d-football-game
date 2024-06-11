@@ -76,46 +76,59 @@ void Ball::setupBuffers() {
     GLfloat vertices[(numSegments + 2) * 4];
     GLuint indices[numSegments * 3];
 
-    // center of the circle
+    // Centrul cercului
     vertices[0] = 0.0f;
     vertices[1] = 0.0f;
-    // center texture coordinate
+    // Coordonatele de textură ale centrului
     vertices[2] = 0.5f;
     vertices[3] = 0.5f;
 
     for (int i = 1; i <= numSegments + 1; ++i) {
         float angle = i * angleIncrement;
-        vertices[i * 4] = cos(angle);
-        vertices[i * 4 + 1] = sin(angle);
-        // texture coordinates
+        vertices[i * 4] = cos(angle); // Coordonata X a vârfului
+        vertices[i * 4 + 1] = sin(angle); // Coordonata Y a vârfului
+        // Coordonatele de textură
         vertices[i * 4 + 2] = cos(angle) * 0.5f + 0.5f;
         vertices[i * 4 + 3] = sin(angle) * 0.5f + 0.5f;
     }
 
     for (int i = 0; i < numSegments; ++i) {
-        indices[i * 3] = 0;
-        indices[i * 3 + 1] = i + 1;
-        indices[i * 3 + 2] = i + 2;
+        indices[i * 3] = 0; // Centrul cercului
+        indices[i * 3 + 1] = i + 1; // Primul vârf al triunghiului
+        indices[i * 3 + 2] = i + 2; // Al doilea vârf al triunghiului
     }
 
+    // Generează un VAO
     glGenVertexArrays(1, &VAO);
+    // Generează un VBO
     glGenBuffers(1, &VBO);
+    // Generează un EBO
     glGenBuffers(1, &EBO);
 
+    // Leagă VAO-ul pentru a începe configurarea acestuia
     glBindVertexArray(VAO);
 
+    // Leagă VBO-ul pentru a începe configurarea acestuia
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // Încarcă datele vârfurilor în VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Leagă EBO-ul pentru a începe configurarea acestuia
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // Încarcă datele indicilor în EBO
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+    // Specifică formatul și poziția datelor pentru atributul de vârf 0 (poziția)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    // Activează atributul de vârf 0
     glEnableVertexAttribArray(0);
+
+    // Specifică formatul și poziția datelor pentru atributul de vârf 1 (coordonatele texturii)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+    // Activează atributul de vârf 1
     glEnableVertexAttribArray(1);
 
-    glBindVertexArray(0);
+    glBindVertexArray(0); // Dezleagă VAO-ul
 }
 
 void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
@@ -124,12 +137,12 @@ void Ball::setProjectionMatrix(const QMatrix4x4 &projection) {
 
 void Ball::updateSpawningAnimation() {
     if (state == Moving) {
-        velocity[1] -= 0.192f;
+        velocity[1] -= 0.192f; // Gravitație
         position[1] += velocity[1] * 0.016f;
 
-        if (position[1] <= -0.28f) { // the ground level
+        if (position[1] <= -0.28f) { // Nivelul solului
             position[1] = -0.28f;
-            velocity[1] *= -dampingFactor;
+            velocity[1] *= -dampingFactor; // simulare bouncing
 
             if (velocity[1] < 0.01f) {
                 velocity[1] = 0.0f;
@@ -143,7 +156,7 @@ void Ball::updateSpawningAnimation() {
 void Ball::updateAnimationFrame() {
     if (state == Moving) {
         frameCounter++;
-        // adjust the number of frames to control the speed
+        // Ajustează numărul de cadre pentru a controla viteza animatiei
         if (frameCounter >= 10) {
             frameCounter = 0;
             currentFrame = (currentFrame + 1) % numFrames;
@@ -156,11 +169,13 @@ void Ball::render() {
     shader.setUniformValue("projection", projectionMatrix);
     shader.setUniformValue("ballPosition", QVector2D(position[0], position[1]));
     shader.setUniformValue("ballRadius", radius);
+    // Leagă textura curentă
     textures[currentFrame]->bind();
     glBindVertexArray(VAO);
-
+    // Desenează elementele (triunghiurile) folosind indicii din EBO
     glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, 0); // numSegments * 3
     glBindVertexArray(0);
+    // Dezleagă textura curentă
     textures[currentFrame]->unbind();
     shader.unbind();
 }
