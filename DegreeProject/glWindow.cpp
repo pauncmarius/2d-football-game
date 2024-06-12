@@ -238,6 +238,10 @@ void GLWindow::updateAnimation()
         ball.setTransparency(1.0f);
     }
 
+    if (goalZoneLeft.contains(ballBoundingBox) || goalZoneRight.contains(ballBoundingBox)) {
+        resetGame();
+    }
+
     // Limitele ferestrei pentru jucători
     QPointF playerPos = player.getPosition();
     if (playerPos.x() < -1.7f) {
@@ -296,4 +300,14 @@ void GLWindow::keyReleaseEvent(QKeyEvent *event)
         default:
             QOpenGLWidget::keyReleaseEvent(event);
     }
+}
+
+void GLWindow::resetGame()
+{
+    ball.setVelocity(0.0f, ball.getVelocity().y());
+    ball.setPosition(0.0f, 0.9f);
+    isSpawningAnimationDone = false;
+
+    player.setPosition(-1.40f, -0.17f);
+    player.setState(Idle);
 }

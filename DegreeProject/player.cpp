@@ -1,6 +1,5 @@
 #include "player.h"
 #include <cmath>
-#include <QImage>
 #include <QDebug>
 #include <iostream>
 

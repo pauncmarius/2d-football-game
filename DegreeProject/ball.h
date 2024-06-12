@@ -16,7 +16,7 @@ enum BallState {
 // Clasa Ball derivată din QOpenGLFunctions_3_3_Core pentru a folosi funcțiile OpenGL
 class Ball : protected QOpenGLFunctions_3_3_Core {
 public:
-    float dampingFactor; // Factor de incetinire a mișcării
+
     float position[2]; // Poziția mingii pe axele x și y
     float velocity[2]; // Viteza mingii pe axele x și y
     float radius; // Raza mingii

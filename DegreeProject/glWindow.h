@@ -42,12 +42,14 @@ private:
     bool isSpawningAnimationDone; // Flag pentru finalizarea animației de spawn
 
     DebugRectangle debugRectangle; // Dreptunghi de debug
-    QRectF goalZoneLeft; // Zona de gol stânga
-    QRectF goalZoneRight; // Zona de gol dreapta
+    QRectF goalZoneLeft; // Zona de poartă stânga
+    QRectF goalZoneRight; // Zona de poartă dreapta
     QRectF playerBoundingBox; // Bounding box pentru jucător
     QRectF ballBoundingBox; // Bounding box pentru minge
 
     QMatrix4x4 projection; // Matricea de proiecție
+
+    void resetGame();
 
 };
 

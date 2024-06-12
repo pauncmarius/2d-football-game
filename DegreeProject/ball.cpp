@@ -3,7 +3,7 @@
 #include <memory>
 #include <iostream>
 
-Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), dampingFactor(0.7f), state(Moving) {
+Ball::Ball() : VAO(0), VBO(0), EBO(0), radius(0.05f), currentFrame(0), frameCounter(0), state(Moving) {
     position[0] = 0.0f;
     position[1] = 0.9f;
     velocity[0] = 0.0f;
@@ -142,7 +142,7 @@ void Ball::updateSpawningAnimation() {
 
         if (position[1] <= -0.28f) { // Nivelul solului
             position[1] = -0.28f;
-            velocity[1] *= -dampingFactor; // simulare bouncing
+            velocity[1] *= -0.7f; // simulare bouncing
 
             if (velocity[1] < 0.01f) {
                 velocity[1] = 0.0f;
@@ -201,7 +201,7 @@ void Ball::setVelocity(float vx, float vy) {
 void Ball::updatePosition() {
     position[0] += velocity[0];
 
-    velocity[0] *= dampingFactor;
+    velocity[0] *= 0.925f; //aplicam un efect intarziat de oprire al mingii dupa nedectetarea coliziunii(player & minge)
 
     //std::cout<<velocity[0]<<std::endl;
 
