@@ -24,8 +24,8 @@ void GLWindow::initializeGL()
     backgroundRenderer.init("C:/Users/paunm/Documents/github/2d-football-game/DegreeProject/resources/bg1.jpg");
 
     // Setează zonele de gol
-    goalZoneLeft = QRectF(-1.8f, -0.4f, 0.3f, 0.7f);
-    goalZoneRight = QRectF(1.455f, -0.4f, 0.3f, 0.7f);
+    goalZoneLeft = QRectF(-1.81f, -0.4f, 0.3f, 0.6f);
+    goalZoneRight = QRectF(1.5f, -0.4f, 0.3f, 0.6f);
 
     // Inițializează texturile pentru minge
     std::vector<QString> ballTexturePaths = {
@@ -109,8 +109,14 @@ void GLWindow::initializeGL()
     player.init(playerTexturePaths);
     player.setScale(0.45f, 0.25f);
     // ex for debug rect
-//    debugRectangle.init();
-//    debugRectangle.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+    debugRectangle1.init();
+    debugRectangle1.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+    debugRectangle2.init();
+    debugRectangle2.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+    debugRectangle3.init();
+    debugRectangle3.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
+    debugRectangle4.init();
+    debugRectangle4.setColor(QColor(255, 0, 0, 128)); // Semi-transparent red
 
     ballShadow.init();
     playerShadow.init();
@@ -126,7 +132,12 @@ void GLWindow::resizeGL(int w, int h)
 
     ball.setProjectionMatrix(projection);
     player.setProjectionMatrix(projection);
-//    debugRectangle.setProjectionMatrix(projection);
+    debugRectangle1.setProjectionMatrix(projection);
+    debugRectangle2.setProjectionMatrix(projection);
+    debugRectangle3.setProjectionMatrix(projection);
+    debugRectangle4.setProjectionMatrix(projection);
+
+
 }
 
 void GLWindow::paintGL()
@@ -136,10 +147,17 @@ void GLWindow::paintGL()
     // Desenează fundalul
     backgroundRenderer.render();
 
-//    // Update and render the debug rectangle
-//    QRectF playerBoundingBox = player.getBoundingBox();
-//    debugRectangle.setRectangle(playerBoundingBox);
-//    debugRectangle.render();
+    // Update and render the debug rectangle
+    QRectF playerBoundingBox = player.getBoundingBox();
+    debugRectangle1.setRectangle(playerBoundingBox);
+    debugRectangle1.render();
+    QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
+    debugRectangle2.setRectangle(ballBoundingBox);
+    debugRectangle2.render();
+    debugRectangle3.setRectangle(goalZoneLeft);
+    debugRectangle3.render();
+    debugRectangle4.setRectangle(goalZoneRight);
+    debugRectangle4.render();
 
     QMatrix4x4 projectionTemp;
     projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);

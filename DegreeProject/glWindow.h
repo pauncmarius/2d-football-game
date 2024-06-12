@@ -41,7 +41,12 @@ private:
     bool kick; // Bool pentru lovitură
     bool isSpawningAnimationDone; // Flag pentru finalizarea animației de spawn
 
-    DebugRectangle debugRectangle; // Dreptunghi de debug
+    // Dreptunghiuri de debug
+    DebugRectangle debugRectangle1;
+    DebugRectangle debugRectangle2;
+    DebugRectangle debugRectangle3;
+    DebugRectangle debugRectangle4;
+
     QRectF goalZoneLeft; // Zona de poartă stânga
     QRectF goalZoneRight; // Zona de poartă dreapta
     QRectF playerBoundingBox; // Bounding box pentru jucător
