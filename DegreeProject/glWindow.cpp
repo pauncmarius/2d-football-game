@@ -187,8 +187,12 @@ void GLWindow::paintGL()
 
 void GLWindow::updateAnimation()
 {
+    // Creează bounding box-uri pentru detectarea coliziunilor
+    QRectF playerBoundingBox = player.getBoundingBox();
+    QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
+
     // ball
-    if (!isSpawningAnimationDone) {
+    if (!isSpawningAnimationDone && !playerBoundingBox.intersects(ballBoundingBox)) {
         ball.updateSpawningAnimation();
         if (ball.getState() == Moving) {
             ball.updateAnimationFrame();
@@ -207,14 +211,18 @@ void GLWindow::updateAnimation()
     // player
     if (kick) {
         player.kick();
+
         if (jump) {
             player.jump();
         }
+
         if (moveLeft) {
             player.move(-0.01f);
-        } else if (moveRight) {
+        } else if (moveRight)
+        {
             player.move(0.01f);
         }
+
     } else if (jump && !goalZoneLeft.contains(player.getPosition()) && !goalZoneRight.contains(player.getPosition())) {
         player.jump();
         if (moveLeft) {
@@ -234,14 +242,19 @@ void GLWindow::updateAnimation()
         }
     }
 
-    // Creează bounding box-uri pentru detectarea coliziunilor
-    QRectF playerBoundingBox = player.getBoundingBox();
-    QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
-
     // Detectarea coliziunilor între jucător și minge
-    if (playerBoundingBox.intersects(ballBoundingBox)) {
-        QPointF playerVelocity = (moveLeft ? QPointF(-0.02f, 0) : moveRight ? QPointF(0.02f, 0) : QPointF(0.02, 0));
-        ball.setVelocity(playerVelocity.x(), ball.getVelocity().y()); // adjust the scaling factor as needed
+    if (playerBoundingBox.intersects(ballBoundingBox)&& !kick) {
+        QPointF playerVelocity;
+        if (moveLeft) {
+            playerVelocity = QPointF(-0.02f, 0);
+            ball.setPosition(playerBoundingBox.left() - ball.radius, ball.getPosition().y());
+        } else if (moveRight) {
+            playerVelocity = QPointF(0.02f, 0);
+            ball.setPosition(playerBoundingBox.right() + ball.radius, ball.getPosition().y());
+        } else {
+            playerVelocity = QPointF(0.02f, 0);
+        }
+        ball.setVelocity(playerVelocity.x(), ball.getVelocity().y());
     }
 
     // Zona de poarta
