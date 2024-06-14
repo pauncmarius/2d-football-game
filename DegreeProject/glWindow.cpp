@@ -1,8 +1,9 @@
 #include "glWindow.h"
 #include <QTimer>
 #include <QKeyEvent>
+#include <QPainter>
 
-GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false), isSpawningAnimationDone(false)
+GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), moveRight(false), jump(false), kick(false), isSpawningAnimationDone(false), textRenderer(this)
 {
     // Setează flag-urile ferestrei pentru a preveni redimensionarea
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Window);
@@ -10,7 +11,7 @@ GLWindow::GLWindow(QWidget *parent) : QOpenGLWidget(parent), moveLeft(false), mo
     // Timer pentru actualizarea animației și fizicii
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &GLWindow::updateAnimation);
-    timer->start(16); // Approximately 60 FPS
+    timer->start(16); // Approxd 60 FPS
 }
 
 GLWindow::~GLWindow(){}
@@ -150,14 +151,14 @@ void GLWindow::paintGL()
     // Update and render the debug rectangle
     QRectF playerBoundingBox = player.getBoundingBox();
     debugRectangle1.setRectangle(playerBoundingBox);
-    debugRectangle1.render();
+    //debugRectangle1.render();
     QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
     debugRectangle2.setRectangle(ballBoundingBox);
-    debugRectangle2.render();
+    //debugRectangle2.render();
     debugRectangle3.setRectangle(goalZoneLeft);
-    debugRectangle3.render();
+    //debugRectangle3.render();
     debugRectangle4.setRectangle(goalZoneRight);
-    debugRectangle4.render();
+    //debugRectangle4.render();
 
     QMatrix4x4 projectionTemp;
     projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
@@ -242,6 +243,10 @@ void GLWindow::updateAnimation()
         }
     }
 
+    // Creează bounding box-uri pentru detectarea coliziunilor
+    playerBoundingBox = player.getBoundingBox();
+    ballBoundingBox = QRectF(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
+
     // Detectarea coliziunilor între jucător și minge
     if (playerBoundingBox.intersects(ballBoundingBox)&& !kick) {
         QPointF playerVelocity;
@@ -270,7 +275,8 @@ void GLWindow::updateAnimation()
     }
 
     if (goalZoneLeft.contains(ballBoundingBox) || goalZoneRight.contains(ballBoundingBox)) {
-        resetGame();
+        textRenderer.showText("Goal!", 5000);
+        QTimer::singleShot(5000, this, &GLWindow::handleResetGame);
     }
 
     // Limitele ferestrei pentru jucători
@@ -341,4 +347,10 @@ void GLWindow::resetGame()
 
     player.setPosition(-1.40f, -0.17f);
     player.setState(Idle);
+}
+
+void GLWindow::handleResetGame()
+{
+    resetGame();
+    update();
 }

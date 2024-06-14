@@ -8,6 +8,8 @@
 #include "player.h"
 #include "debugRectangle.h"
 #include "shadow.h"
+#include "textRenderer.h"
+
 
 // Clasa GLWindow derivată din QOpenGLWidget și QOpenGLFunctions_3_3_Core pentru a crea și gestiona fereastra OpenGL
 class GLWindow : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
@@ -27,6 +29,8 @@ protected:
 
 private slots:
     void updateAnimation(); // Actualizează animația și fizica
+    void handleResetGame();
+
 
 private:
     BackgroundRenderer backgroundRenderer; // Renderer pentru fundal
@@ -34,6 +38,8 @@ private:
     Player player; // Obiectul jucătorului
     Shadow ballShadow; // Umbră pentru minge
     Shadow playerShadow; // Umbră pentru jucător
+    TextRenderer textRenderer; // Text randare
+
 
     bool moveLeft; // Bool pentru mișcarea la stânga
     bool moveRight; // Bool pentru mișcarea la dreapta
@@ -55,6 +61,7 @@ private:
     QMatrix4x4 projection; // Matricea de proiecție
 
     void resetGame();
+
 
 };
 

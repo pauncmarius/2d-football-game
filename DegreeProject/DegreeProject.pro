@@ -28,6 +28,7 @@ SOURCES += \
     player.cpp \
     shader.cpp \
     shadow.cpp \
+    textRenderer.cpp \
     texture.cpp
 
 HEADERS += \
@@ -38,6 +39,7 @@ HEADERS += \
     player.h \
     shader.h \
     shadow.h \
+    textRenderer.h \
     texture.h
 
 # Default rules for deployment.
