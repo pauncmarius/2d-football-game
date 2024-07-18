@@ -151,14 +151,14 @@ void GLWindow::paintGL()
     // Update and render the debug rectangle
     QRectF playerBoundingBox = player.getBoundingBox();
     debugRectangle1.setRectangle(playerBoundingBox);
-    //debugRectangle1.render();
+    debugRectangle1.render();
     QRectF ballBoundingBox(ball.getPosition().x() - ball.radius, ball.getPosition().y() - ball.radius, ball.radius * 2, ball.radius * 2);
     debugRectangle2.setRectangle(ballBoundingBox);
-    //debugRectangle2.render();
+    debugRectangle2.render();
     debugRectangle3.setRectangle(goalZoneLeft);
-    //debugRectangle3.render();
+    debugRectangle3.render();
     debugRectangle4.setRectangle(goalZoneRight);
-    //debugRectangle4.render();
+    debugRectangle4.render();
 
     QMatrix4x4 projectionTemp;
     projectionTemp.ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
