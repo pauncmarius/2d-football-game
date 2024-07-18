@@ -1,2 +1,2 @@
-# 2d-football-game
+# 2d-football-game (dropped)
 C++, Qt, OpenGL
